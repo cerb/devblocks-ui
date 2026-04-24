@@ -1,0 +1,49 @@
+import { Menu } from './menu/menu';
+import type { MenuOptions } from './menu/types';
+
+interface PluginOptions extends MenuOptions {
+  /** Trigger element (CSS selector or DOM element) that toggles the menu. */
+  trigger?: string | Element;
+}
+
+// Minimal jQuery surface — no @types/jquery dependency.
+interface JQuery {
+  each(cb: (this: HTMLElement) => void): JQuery;
+  data(key: string, value: unknown): JQuery;
+  on(event: string, cb: (this: HTMLElement, e: Event) => void): JQuery;
+}
+interface JQueryStatic {
+  (sel: string | Element): JQuery;
+  fn: Record<string, unknown>;
+}
+
+/**
+ * Optional jQuery glue. Mirrors the jQuery UI menu init pattern:
+ *
+ *   $('ul#my-menu').duiMenu({ trigger: '#open-btn', onSelect: fn });
+ *
+ * Gated on `typeof jQuery !== 'undefined'` — never required at runtime.
+ */
+export function registerJQueryPlugin(): void {
+  const $ = (globalThis as { jQuery?: JQueryStatic }).jQuery;
+  if (!$) return;
+  if ($.fn['duiMenu']) return;
+
+  $.fn['duiMenu'] = function (this: JQuery, opts: PluginOptions = {}): JQuery {
+    return this.each(function (this: HTMLElement) {
+      const ul = this as HTMLUListElement;
+      const menu = new Menu(ul, opts);
+      $(ul).data('duiMenu', menu);
+
+      if (opts.trigger) {
+        const $trig = $(opts.trigger);
+        $trig.data('duiMenu', menu);
+        $trig.on('click', function (this: HTMLElement, e: Event) {
+          e.stopPropagation();
+          if (menu.isOpen()) menu.close();
+          else menu.open(this);
+        });
+      }
+    });
+  };
+}

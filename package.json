@@ -1,0 +1,46 @@
+{
+  "name": "devblocks-ui",
+  "version": "0.1.0",
+  "description": "Lightweight zero-dependency UI components (Menu, …). The dist drops into a <script> tag or imports as ESM.",
+  "type": "module",
+  "main": "./dist/devblocks-ui.esm.js",
+  "module": "./dist/devblocks-ui.esm.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "styles",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/devblocks-ui.esm.js",
+      "default": "./dist/devblocks-ui.esm.js"
+    },
+    "./iife": "./dist/devblocks-ui.js",
+    "./styles": "./dist/devblocks-ui.css",
+    "./styles.scss": "./styles/index.scss"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run build:js && npm run build:css && npm run build:types",
+    "build:js": "vite build",
+    "build:css": "sass --no-source-map --style=compressed styles/index.scss:dist/devblocks-ui.css",
+    "build:types": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "ui",
+    "menu",
+    "virtual",
+    "zero-dependency"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "sass": "^1.77.0",
+    "typescript": "^5.4.0",
+    "vite": "^8.0.10"
+  }
+}

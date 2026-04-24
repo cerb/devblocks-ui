@@ -1,0 +1,144 @@
+/* Examples page styling — NOT part of the library dist. */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
+               'Helvetica Neue', sans-serif;
+  background: #f9fafb;
+  color: #111827;
+  transition: background 120ms linear, color 120ms linear;
+}
+body.page-dark {
+  background: #0b1220;
+  color: #e5e7eb;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 64px;
+}
+
+.page-header {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px 16px;
+  position: relative;
+}
+.page-header h1 {
+  margin: 0 0 4px;
+  font-size: 28px;
+  letter-spacing: -0.01em;
+}
+.page-header .tagline {
+  margin: 0 0 16px;
+  opacity: 0.7;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 32px;
+  right: 24px;
+  background: transparent;
+  color: inherit;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+.theme-toggle:hover { opacity: 1; }
+
+.component {
+  margin: 32px 0;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+body.page-dark .component {
+  background: #111827;
+  border-color: #1f2937;
+}
+.component h2 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+.component-desc {
+  margin: 0 0 20px;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 1.5;
+}
+.component-desc code {
+  font-size: 12px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(127, 127, 127, 0.15);
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 2fr;
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 720px) {
+  .demo-grid { grid-template-columns: 1fr; }
+}
+
+.demo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(127, 127, 127, 0.05);
+  border-radius: 6px;
+}
+
+.demo-trigger {
+  align-self: flex-start;
+  background: #2563eb;
+  color: #ffffff;
+  border: 0;
+  border-radius: 5px;
+  padding: 8px 16px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.demo-trigger:hover { background: #1d4ed8; }
+body.page-dark .demo-trigger { background: #3b82f6; }
+body.page-dark .demo-trigger:hover { background: #2563eb; }
+
+.demo-output {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12px;
+  padding: 8px 10px;
+  background: rgba(127, 127, 127, 0.1);
+  border-radius: 4px;
+  min-height: 32px;
+}
+
+pre {
+  margin: 0;
+  border-radius: 6px;
+  font-size: 12.5px;
+  max-height: 360px;
+  overflow: auto;
+}
+pre code {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+}
+
+.page-footer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  font-size: 13px;
+  opacity: 0.6;
+}

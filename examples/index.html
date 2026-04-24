@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Devblocks UI — Examples</title>
+
+  <!-- Prism syntax highlighting (CDN, demo page only — NOT part of the library) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+  <link rel="stylesheet" href="./examples.css">
+  <script type="module" src="./main.ts"></script>
+</head>
+<body>
+
+  <header class="page-header">
+    <h1>Devblocks UI</h1>
+    <p class="tagline">Lightweight, zero-dependency UI components.</p>
+    <button id="theme-toggle" type="button" class="theme-toggle" aria-pressed="false">
+      <span class="theme-toggle-label">Dark mode</span>
+    </button>
+  </header>
+
+  <main>
+
+    <!-- ───── Menu — small static ──────────────────────────────────── -->
+    <section class="component">
+      <h2>Menu — small static</h2>
+      <p class="component-desc">
+        Drop-in cascading menu built from a hidden UL/LI tree.
+        Open with the button, hover to expand submenus, click a leaf to select.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <button id="menu-small-trigger" type="button" class="demo-trigger">
+            Open menu
+          </button>
+          <output id="menu-small-result" class="demo-output">No selection yet.</output>
+
+          <ul id="menu-small" hidden>
+            <li data-id="new">New
+              <ul>
+                <li data-id="new.doc">Document</li>
+                <li data-id="new.folder">Folder</li>
+              </ul>
+            </li>
+            <li data-id="open">Open</li>
+            <li data-id="save">Save</li>
+            <li data-id="export">Export
+              <ul>
+                <li data-id="export.pdf">PDF</li>
+                <li data-id="export.csv">CSV</li>
+                <li data-id="export.json">JSON</li>
+              </ul>
+            </li>
+            <li data-id="quit">Quit</li>
+          </ul>
+        </div>
+
+        <pre><code class="language-javascript" id="code-menu-small"></code></pre>
+      </div>
+    </section>
+
+    <!-- ───── Menu — large virtualized ─────────────────────────────── -->
+    <section class="component">
+      <h2>Menu — large (5000 items, virtualized)</h2>
+      <p class="component-desc">
+        Panels with more than <code>virtThreshold</code> items render only the
+        visible window plus a small buffer. Total DOM nodes for the open panel
+        stay roughly constant regardless of total item count.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <button id="menu-large-trigger" type="button" class="demo-trigger">
+            Open 5000-item menu
+          </button>
+          <output id="menu-large-result" class="demo-output">No selection yet.</output>
+          <ul id="menu-large" hidden></ul>
+        </div>
+
+        <pre><code class="language-javascript" id="code-menu-large"></code></pre>
+      </div>
+    </section>
+
+    <!-- ───── Menu — deep nested ───────────────────────────────────── -->
+    <section class="component">
+      <h2>Menu — deep nested</h2>
+      <p class="component-desc">
+        Submenus open to the right of the active row and flip left or clamp
+        to the viewport when they would overflow.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <button id="menu-deep-trigger" type="button" class="demo-trigger">
+            Open deep menu
+          </button>
+          <output id="menu-deep-result" class="demo-output">No selection yet.</output>
+
+          <ul id="menu-deep" hidden>
+            <li data-id="region.americas">Americas
+              <ul>
+                <li data-id="region.americas.us">United States
+                  <ul>
+                    <li data-id="region.americas.us.ca">California</li>
+                    <li data-id="region.americas.us.ny">New York</li>
+                    <li data-id="region.americas.us.tx">Texas</li>
+                  </ul>
+                </li>
+                <li data-id="region.americas.ca">Canada
+                  <ul>
+                    <li data-id="region.americas.ca.on">Ontario</li>
+                    <li data-id="region.americas.ca.qc">Quebec</li>
+                  </ul>
+                </li>
+                <li data-id="region.americas.mx">Mexico</li>
+              </ul>
+            </li>
+            <li data-id="region.europe">Europe
+              <ul>
+                <li data-id="region.europe.uk">United Kingdom</li>
+                <li data-id="region.europe.de">Germany</li>
+                <li data-id="region.europe.fr">France</li>
+                <li data-id="region.europe.es">Spain</li>
+              </ul>
+            </li>
+            <li data-id="region.apac">Asia-Pacific
+              <ul>
+                <li data-id="region.apac.jp">Japan</li>
+                <li data-id="region.apac.au">Australia</li>
+                <li data-id="region.apac.in">India</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <pre><code class="language-javascript" id="code-menu-deep"></code></pre>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="page-footer">
+    <p>
+      Source UL is hidden via <code>hidden</code> attribute. The menu parses
+      it once on construction; rendered panels are appended to <code>&lt;body&gt;</code>.
+    </p>
+  </footer>
+
+  <!-- Prism core + JS language (CDN, demo page only) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+</body>
+</html>

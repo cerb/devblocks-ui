@@ -1,0 +1,66 @@
+// Devblocks UI — Menu component
+
+.dui-menu-panel {
+  position: fixed;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  background: var(--dui-bg);
+  color: var(--dui-fg);
+  border: 1px solid var(--dui-border);
+  border-radius: var(--dui-radius);
+  box-shadow: var(--dui-shadow);
+  min-width: 180px;
+  max-width: 320px;
+  box-sizing: border-box;
+  z-index: var(--dui-z-menu);
+  font-family: inherit;
+}
+
+.dui-menu-panel-virt {
+  overflow-y: scroll;
+  padding: 0;
+}
+
+.dui-menu-item {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 var(--dui-item-pad);
+  cursor: default;
+  user-select: none;
+  font-size: var(--dui-font-size);
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.dui-menu-item-active {
+  background: var(--dui-accent-bg);
+  color: var(--dui-accent-fg);
+  outline: none;
+
+  .dui-menu-arrow svg {
+    stroke: var(--dui-accent-fg);
+  }
+}
+
+.dui-menu-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dui-menu-arrow {
+  flex-shrink: 0;
+  margin-left: 8px;
+  opacity: var(--dui-arrow-op);
+  display: flex;
+  align-items: center;
+}
+
+.dui-menu-spacer {
+  display: block;
+  padding: 0;
+  margin: 0;
+  pointer-events: none;
+}
