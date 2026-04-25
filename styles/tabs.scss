@@ -1,0 +1,75 @@
+// Devblocks UI — Tabs
+
+.dui-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0 4px 0;
+  list-style: none;
+  border-bottom: 1px solid var(--dui-border);
+}
+
+.dui-tab {
+  margin: 4px 2px 0;
+
+  > a {
+    display: block;
+    padding: 6px 14px;
+    font-size: var(--dui-font-size);
+    color: var(--dui-fg);
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: var(--dui-radius) var(--dui-radius) 0 0;
+    user-select: none;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--dui-tab-hover-bg);
+      border-color: var(--dui-border);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--dui-accent-bg);
+      outline-offset: -2px;
+    }
+  }
+
+  &.dui-tab-active > a {
+    background: var(--dui-bg);
+    border-color: var(--dui-border);
+    // Erase the strip's border-bottom behind the active tab, connecting it to
+    // the panel below.
+    border-bottom-color: var(--dui-bg);
+    margin-bottom: -1px;
+    position: relative;
+    z-index: 1;
+    cursor: default;
+  }
+}
+
+.dui-tab-panel {
+  display: none;
+  padding: 16px;
+  border: 1px solid var(--dui-border);
+  border-top: 0;
+  background: var(--dui-bg);
+  color: var(--dui-fg);
+  font-size: var(--dui-font-size);
+
+  &.dui-tab-panel-active {
+    display: block;
+  }
+}
+
+.dui-tab-panel-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+}
+
+.dui-tab-panel-error {
+  margin: 0;
+  opacity: 0.6;
+}

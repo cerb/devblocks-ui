@@ -21,6 +21,11 @@ export type { MenuOptions, MenuItem } from './menu/types';
 export { Toggle } from './toggle/toggle';
 export type { ToggleOptions } from './toggle/types';
 
+export { Spinner } from './spinner/spinner';
+
+export { Tabs } from './tabs/tabs';
+export type { TabsOptions, TabInfo } from './tabs/types';
+
 import { registerJQueryPlugin } from './jquery-plugin';
 
 if (typeof window !== 'undefined') {

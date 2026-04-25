@@ -2,6 +2,8 @@ import { Menu } from './menu/menu';
 import type { MenuOptions } from './menu/types';
 import { Toggle } from './toggle/toggle';
 import type { ToggleOptions } from './toggle/types';
+import { Tabs } from './tabs/tabs';
+import type { TabsOptions } from './tabs/types';
 
 interface PluginOptions extends MenuOptions {
   /** Trigger element (CSS selector or DOM element) that toggles the menu. */
@@ -56,6 +58,16 @@ export function registerJQueryPlugin(): void {
         const input = this as HTMLInputElement;
         const t = new Toggle(input, opts);
         $(input).data('duiToggle', t);
+      });
+    };
+  }
+
+  if (!$.fn['duiTabs']) {
+    $.fn['duiTabs'] = function (this: JQuery, opts: TabsOptions = {}): JQuery {
+      return this.each(function (this: HTMLElement) {
+        const ul = this as HTMLUListElement;
+        const tabs = new Tabs(ul, opts);
+        $(ul).data('duiTabs', tabs);
       });
     };
   }

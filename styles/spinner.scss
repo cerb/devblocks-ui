@@ -1,0 +1,17 @@
+// Devblocks UI — Spinner
+
+@keyframes dui-spin {
+  to { transform: rotate(360deg); }
+}
+
+.dui-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dui-spinner-color);
+
+  svg {
+    animation: dui-spin 0.75s linear infinite;
+    transform-origin: center;
+  }
+}

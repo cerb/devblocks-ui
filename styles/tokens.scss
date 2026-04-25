@@ -22,6 +22,12 @@
   --dui-toggle-off:  #9ca3af;
   --dui-toggle-on:   var(--dui-accent-bg);
   --dui-toggle-knob: #ffffff;
+
+  // Spinner
+  --dui-spinner-color: var(--dui-accent-bg);
+
+  // Tabs
+  --dui-tab-hover-bg: rgba(0, 0, 0, 0.04);
 }
 
 [data-dui-theme="dark"] {
@@ -36,4 +42,7 @@
   // Toggle
   --dui-toggle-off:  #4b5563;
   --dui-toggle-knob: #f9fafb;
+
+  // Tabs
+  --dui-tab-hover-bg: rgba(255, 255, 255, 0.06);
 }
