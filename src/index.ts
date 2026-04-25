@@ -29,8 +29,3 @@ export type { TabsOptions, TabInfo } from './tabs/types';
 export { Dialog } from './dialog/dialog';
 export type { DialogOptions } from './dialog/types';
 
-import { registerJQueryPlugin } from './jquery-plugin';
-
-if (typeof window !== 'undefined') {
-  registerJQueryPlugin();
-}

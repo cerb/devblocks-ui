@@ -69,17 +69,6 @@ const menu = new Menu(document.querySelector('ul#my-menu'), {
 });
 ```
 
-### jQuery plugin (optional)
-
-If jQuery is on the page, a plugin is registered automatically that mirrors the jQuery UI menu init pattern:
-
-```js
-$('ul#my-menu').duiMenu({
-  trigger:  '#trigger',
-  onSelect: (renderedLi, sourceLi) => console.log(sourceLi.dataset.id),
-});
-```
-
 ## Theming
 
 Themes are CSS custom properties. Light is the default. To switch to dark, set `data-dui-theme="dark"` on `<html>` or `<body>`:
@@ -195,12 +184,6 @@ Pass any existing element as the content area — it is moved inside the dialog 
   });
   dlg.open();
 </script>
-```
-
-jQuery plugin:
-
-```js
-$('#my-content').duiDialog({ title: 'My Dialog', trigger: '#open-btn' });
 ```
 
 ## Build from source

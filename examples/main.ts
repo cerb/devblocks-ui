@@ -333,9 +333,6 @@ const tabs = new Tabs(document.querySelector('ul#my-tabs'), {
 
 // Re-fetch tab 2's content (e.g. after a form submission):
 tabs.refresh(2);
-
-// jQuery plugin equivalent:
-// $('ul#my-tabs').duiTabs({ onTabSelected: fn });
 `.trim();
 
 // ── Demo: spinner ─────────────────────────────────────────────────────
@@ -430,9 +427,6 @@ const t = new Toggle(document.getElementById('my-toggle'), {
 
 // Programmatic control (does not fire onChange):
 t.checked = true;
-
-// jQuery plugin (optional):
-// $('input[type=checkbox]').duiToggle({ onChange: fn });
 `.trim();
 
 // ── Demo: dialog — basic ──────────────────────────────────────────────
@@ -547,9 +541,6 @@ dlgB.open();
 // Clicking either dialog brings it to the front automatically.
 // Close Dialog B via API:
 dlgB.close();
-
-// jQuery plugin (optional):
-// $('#my-content').duiDialog({ title: 'My Dialog', trigger: '#open-btn' });
 `.trim();
 
 // ── Highlight all code blocks once they're populated ──────────────────

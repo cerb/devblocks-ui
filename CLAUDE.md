@@ -19,15 +19,14 @@ Currently ships: **Menu** (cascading, virtualizes 5000+ items, inline mode), **T
   - User-controlled text → `textContent`, never `innerHTML`.
   - Mirror attributes from source elements only via a strict allowlist (we use `name.startsWith('data-')` in Menu). Never blindly copy attributes; never copy `class`, `style`, or `on*`.
   - No `eval`, `new Function`, or `Function(...)`.
-- **Public API shape**: `new DevblocksUI.<Component>(rootEl, opts)` for vanilla, `$.fn.dui<Component>` for the optional jQuery plugin. jQuery glue is gated on `typeof jQuery !== 'undefined'` and never required at runtime.
+- **Public API shape**: `new DevblocksUI.<Component>(rootEl, opts)` for vanilla JS, `new Component(rootEl, opts)` for ESM.
 - **TypeScript strict mode** is on. Don't relax it without a real reason.
 
 ## Project layout
 
 ```
 src/
-  index.ts               # public entry — re-exports each component, registers jQuery plugin
-  jquery-plugin.ts       # $.fn.duiMenu / duiToggle / duiTabs / duiDialog
+  index.ts               # public entry — re-exports each component
   menu/
     menu.ts              # Menu class (floating + inline modes)
     parse.ts             # parseUl()
@@ -86,12 +85,11 @@ For UI-affecting changes, run `npm run dev`, open http://localhost:5173/, exerci
 
 ## Adding a new component
 
-1. `src/dialog/{dialog.ts,types.ts,index.ts}` — class + types. Add icon files only if needed.
-2. Re-export from `src/index.ts`: `export { Dialog } from './dialog/dialog';` plus `export type { DialogOptions } from './dialog/types';`.
-3. `styles/dialog.scss` — use only `var(--dui-*)` tokens. Add new tokens to `styles/tokens.scss` (with both light + dark values) before referencing them. Then `@use 'dialog';` from `styles/index.scss`.
-4. Extend the jQuery plugin in `src/jquery-plugin.ts` — add a `$.fn.duiDialog` registration alongside the others. Same `typeof jQuery !== 'undefined'` gating.
-5. Add a `<section class="component">` to `examples/index.html` and a wiring block to `examples/main.ts` with at least one live demo and a runnable code snippet (Prism highlights it via the CDN script already loaded).
-6. Run `npm run typecheck && npm run build && npm run dev` and verify in a browser.
+1. `src/<name>/{<name>.ts,types.ts,index.ts}` — class + types. Add icon files only if needed.
+2. Re-export from `src/index.ts`: `export { Name } from './<name>/<name>';` plus `export type { NameOptions } from './<name>/types';`.
+3. `styles/<name>.scss` — use only `var(--dui-*)` tokens. Add new tokens to `styles/tokens.scss` (with both light + dark values) before referencing them. Then `@use '<name>';` from `styles/index.scss`.
+4. Add a `<section class="component">` to `examples/index.html` and a wiring block to `examples/main.ts` with at least one live demo and a runnable code snippet (Prism highlights it via the CDN script already loaded).
+5. Run `npm run typecheck && npm run build && npm run dev` and verify in a browser.
 
 ## Don't
 
