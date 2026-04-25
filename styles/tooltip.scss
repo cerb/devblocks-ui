@@ -1,0 +1,37 @@
+.dui-tooltip {
+  position: absolute;
+  background: var(--dui-bg);
+  color: var(--dui-fg);
+  border: 1px solid var(--dui-border);
+  border-radius: var(--dui-radius);
+  box-shadow: var(--dui-shadow);
+  z-index: var(--dui-z-tooltip);
+  font-size: var(--dui-font-size);
+  font-family: inherit;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  line-height: 1.4;
+}
+
+.dui-tooltip-arrow {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--dui-bg);
+  border: 1px solid var(--dui-border);
+  transform: rotate(45deg);
+}
+
+// Tooltip above target — arrow at bottom, bottom-right corner points down toward target
+.dui-tooltip--above .dui-tooltip-arrow {
+  bottom: -5px;
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+
+// Tooltip below target — arrow at top, top-left corner points up toward target
+.dui-tooltip--below .dui-tooltip-arrow {
+  top: -5px;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+}

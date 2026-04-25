@@ -1,4 +1,4 @@
-import { Menu, Toggle, Tabs, Spinner, Dialog } from 'devblocks-ui';
+import { Menu, Toggle, Tabs, Spinner, Dialog, Tooltip } from 'devblocks-ui';
 import 'devblocks-ui/styles';
 
 declare const Prism: { highlightAllUnder: (root: ParentNode) => void } | undefined;
@@ -541,6 +541,38 @@ dlgB.open();
 // Clicking either dialog brings it to the front automatically.
 // Close Dialog B via API:
 dlgB.close();
+`.trim();
+
+// ── Demo: tooltip — basic ─────────────────────────────────────────────
+
+{
+  const trigger = document.getElementById('tooltip-trigger') as HTMLButtonElement;
+  const src = document.getElementById('tooltip-text') as HTMLElement;
+
+  const tip = new Tooltip(src, { target: '#tooltip-trigger' });
+
+  trigger.addEventListener('click', () => {
+    if (tip.isOpen()) tip.close();
+    else tip.open();
+  });
+}
+
+(document.getElementById('code-tooltip-html') as HTMLElement).textContent = `
+<button id="tooltip-trigger" type="button">Show tooltip</button>
+<div id="tooltip-text" hidden>Workspace pages are organized into tabs.</div>
+`.trim();
+
+(document.getElementById('code-tooltip-js') as HTMLElement).textContent = `
+import { Tooltip } from 'devblocks-ui';
+
+const tip = new Tooltip(document.getElementById('tooltip-text'), {
+  target: '#tooltip-trigger',
+});
+
+document.getElementById('tooltip-trigger').addEventListener('click', () => {
+  if (tip.isOpen()) tip.close();
+  else tip.open();
+});
 `.trim();
 
 // ── Highlight all code blocks once they're populated ──────────────────

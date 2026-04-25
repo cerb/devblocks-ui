@@ -29,3 +29,6 @@ export type { TabsOptions, TabInfo } from './tabs/types';
 export { Dialog } from './dialog/dialog';
 export type { DialogOptions } from './dialog/types';
 
+export { Tooltip } from './tooltip/tooltip';
+export type { TooltipOptions } from './tooltip/types';
+
