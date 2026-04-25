@@ -6,13 +6,15 @@ Built to replace jQuery UI with hand-rolled components that are small, fast, and
 
 ## Status
 
-| Component | Status                       |
-| --------- | ---------------------------- |
-| Menu      | Available — cascading, virtualizes 5000+ items, inline mode, full keyboard nav |
-| Toggle    | Available — animated binary switch wrapping `input[type=checkbox]` |
-| Spinner   | Available — CSS-animated loading indicator |
-| Tabs      | Available — anchor (static) and dynamic (Ajax) panels, full keyboard nav |
-| Dialog    | Available — floating, draggable, resizable, minimize/restore, multi-instance z-index focus |
+| Component  | Status                       |
+| ---------- | ---------------------------- |
+| Menu       | Available — cascading, virtualizes 5000+ items, inline mode, full keyboard nav |
+| Toggle     | Available — animated binary switch wrapping `input[type=checkbox]` |
+| Spinner    | Available — CSS-animated loading indicator |
+| Tabs       | Available — anchor (static) and dynamic (Ajax) panels, full keyboard nav |
+| Dialog     | Available — floating, draggable, resizable, minimize/restore, multi-instance z-index focus |
+| Tooltip    | Available — floating tip with directional arrow, auto-flips above/below |
+| DatePicker | Available — popup calendar, month/year navigation, configurable week start and format |
 
 ## Install
 
@@ -183,6 +185,56 @@ Pass any existing element as the content area — it is moved inside the dialog 
     onClose: () => console.log('closed'),
   });
   dlg.open();
+</script>
+```
+
+## Tooltip — options
+
+```ts
+interface TooltipOptions {
+  target:    string;   // CSS selector for the anchor element
+  maxWidth?: number;   // max tooltip width in px (default 260)
+  onOpen?:   () => void;
+  onClose?:  () => void;
+}
+```
+
+Public methods: `open()`, `close()`, `isOpen()`, `destroy()`.
+
+Pass the element that contains the tooltip text (can be `hidden`). The tooltip floats above or below the `target` element, auto-flipping based on available viewport space. A directional arrow points at the anchor. Click outside or call `close()` to dismiss.
+
+## DatePicker — options
+
+```ts
+interface DatePickerOptions {
+  startOfWeek?: 'mon' | 'sun';   // default 'mon'
+  format?:      string;          // default 'YYYY-MM-DD'
+  defaultDate?: Date | string | null;
+  onSelect?:    (date: Date, formatted: string) => void;
+}
+```
+
+Public methods: `open()`, `close()`, `isOpen()`, `setDate(date)`, `getDate()`, `destroy()`.
+
+Pass an `input[type=text]`. The calendar popup opens on click or focus and closes on selection, Escape, or click-outside. The popup scrolls with the page (`position: absolute`).
+
+**Focus model:** clicking the input shows the calendar but keeps focus in the input so you can type immediately. Tabbing to the input shows the calendar and moves focus into the day grid for keyboard navigation. ArrowDown also moves focus from the input into the grid.
+
+**Typing:** type a date directly in the input — the calendar navigates to the matching month as soon as the value parses against the configured format. Press Enter to confirm a typed date.
+
+**Mouse/keyboard navigation:** month and year advance with the header buttons (`«`/`»` for year, `‹`/`›` for month). In the grid: arrow keys move between days, Home/End jump to row edges, PageUp/PageDown changes month, Shift+PageUp/Down changes year.
+
+**Format tokens:** `YYYY` (4-digit year), `YY` (2-digit), `MM` (zero-padded month), `M` (month), `DD` (zero-padded day), `D` (day). Examples: `'YYYY-MM-DD'`, `'MM/DD/YYYY'`, `'DD/MM/YYYY'`.
+
+```html
+<input type="text" id="my-date" placeholder="Pick a date">
+
+<script>
+  const dp = new DevblocksUI.DatePicker(document.getElementById('my-date'), {
+    format:      'MM/DD/YYYY',
+    startOfWeek: 'sun',
+    onSelect: (date, formatted) => console.log(formatted),
+  });
 </script>
 ```
 

@@ -1,4 +1,4 @@
-import { Menu, Toggle, Tabs, Spinner, Dialog, Tooltip } from 'devblocks-ui';
+import { Menu, Toggle, Tabs, Spinner, Dialog, Tooltip, DatePicker } from 'devblocks-ui';
 import 'devblocks-ui/styles';
 
 declare const Prism: { highlightAllUnder: (root: ParentNode) => void } | undefined;
@@ -573,6 +573,79 @@ document.getElementById('tooltip-trigger').addEventListener('click', () => {
   if (tip.isOpen()) tip.close();
   else tip.open();
 });
+`.trim();
+
+// ── Demo: datepicker ──────────────────────────────────────────────────
+
+{
+  const result    = document.getElementById('datepicker-result') as HTMLElement;
+  const clearBtn  = document.getElementById('dp-clear')    as HTMLButtonElement;
+  const todayBtn  = document.getElementById('dp-set-today') as HTMLButtonElement;
+
+  const dpDefault = new DatePicker(
+    document.getElementById('dp-default') as HTMLInputElement,
+    {
+      startOfWeek:  'mon',
+      format:       'YYYY-MM-DD',
+      onSelect: (_date, formatted) => {
+        result.textContent = `Selected (default): ${formatted}`;
+      },
+    },
+  );
+
+  const dpUS = new DatePicker(
+    document.getElementById('dp-us') as HTMLInputElement,
+    {
+      startOfWeek: 'sun',
+      format:      'MM/DD/YYYY',
+      onSelect: (_date, formatted) => {
+        result.textContent = `Selected (US): ${formatted}`;
+      },
+    },
+  );
+
+  clearBtn.addEventListener('click', () => {
+    dpDefault.setDate(null);
+    dpUS.setDate(null);
+    result.textContent = 'Cleared.';
+  });
+
+  todayBtn.addEventListener('click', () => {
+    const today = new Date();
+    dpDefault.setDate(today);
+    dpUS.setDate(today);
+    result.textContent = `Set to today via API.`;
+  });
+
+  (window as unknown as Record<string, unknown>)['dpDefault'] = dpDefault;
+  (window as unknown as Record<string, unknown>)['dpUS']      = dpUS;
+}
+
+(document.getElementById('code-datepicker-html') as HTMLElement).textContent = `
+<input type="text" id="my-date" placeholder="Pick a date">
+`.trim();
+
+(document.getElementById('code-datepicker-js') as HTMLElement).textContent = `
+import { DatePicker } from 'devblocks-ui';
+
+// Mon-start calendar, ISO format (default)
+const dp = new DatePicker(document.getElementById('my-date'), {
+  startOfWeek: 'mon',        // 'mon' | 'sun'  (default 'mon')
+  format:      'YYYY-MM-DD', // default
+  defaultDate: null,         // Date | string | null
+  onSelect: (date, formatted) => {
+    console.log(formatted);  // e.g. "2026-04-24"
+  },
+});
+
+// Programmatic control:
+dp.setDate(new Date());      // set to today
+dp.setDate('2026-12-25');    // set by string (parsed with format)
+dp.setDate(null);            // clear
+dp.getDate();                // → Date | null
+dp.open();                   // open popup
+dp.close();                  // close popup
+dp.destroy();                // remove popup, detach listeners
 `.trim();
 
 // ── Highlight all code blocks once they're populated ──────────────────

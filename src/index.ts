@@ -32,3 +32,6 @@ export type { DialogOptions } from './dialog/types';
 export { Tooltip } from './tooltip/tooltip';
 export type { TooltipOptions } from './tooltip/types';
 
+export { DatePicker } from './datepicker/datepicker';
+export type { DatePickerOptions } from './datepicker/types';
+

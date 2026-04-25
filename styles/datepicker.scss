@@ -1,0 +1,129 @@
+.dui-datepicker {
+  position: absolute;
+  z-index: var(--dui-z-datepicker);
+  background: var(--dui-bg);
+  color: var(--dui-fg);
+  border: 1px solid var(--dui-border);
+  border-radius: var(--dui-radius);
+  box-shadow: var(--dui-shadow);
+  font-size: var(--dui-font-size);
+  width: 272px;
+  padding: 10px;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.dui-datepicker[hidden] {
+  display: none;
+}
+
+// ── Header ────────────────────────────────────────────────────────────────
+
+.dui-datepicker-header {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+
+.dui-datepicker-caption {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dui-datepicker-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--dui-fg);
+  padding: 4px 5px;
+  border-radius: var(--dui-radius);
+  line-height: 0;
+  transition: background 0.1s;
+  flex-shrink: 0;
+
+  &:hover {
+    background: var(--dui-datepicker-hover-bg);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--dui-accent-bg);
+    outline-offset: 1px;
+  }
+}
+
+// ── Weekday labels ────────────────────────────────────────────────────────
+
+.dui-datepicker-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+}
+
+.dui-datepicker-weekday {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--dui-datepicker-weekday-fg);
+  padding: 2px 0 4px;
+}
+
+// ── Days grid ─────────────────────────────────────────────────────────────
+
+.dui-datepicker-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.dui-datepicker-day {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  padding: 0;
+  height: 32px;
+  border-radius: var(--dui-radius);
+  color: var(--dui-fg);
+  font-size: var(--dui-font-size);
+  line-height: 1;
+  transition: background 0.1s;
+
+  &:hover {
+    background: var(--dui-datepicker-hover-bg);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--dui-accent-bg);
+    outline-offset: -1px;
+  }
+}
+
+.dui-datepicker-day-other {
+  color: var(--dui-datepicker-other-fg);
+}
+
+.dui-datepicker-day-today {
+  font-weight: 700;
+  color: var(--dui-accent-bg);
+}
+
+.dui-datepicker-day-selected {
+  background: var(--dui-accent-bg);
+  color: var(--dui-accent-fg);
+  font-weight: 600;
+
+  &:hover {
+    background: var(--dui-accent-bg);
+    filter: brightness(0.92);
+  }
+
+  &.dui-datepicker-day-today {
+    color: var(--dui-accent-fg);
+  }
+}

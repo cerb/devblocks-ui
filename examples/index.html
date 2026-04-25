@@ -28,6 +28,7 @@
     <a href="#toggle">Toggle</a>
     <a href="#dialog">Dialog</a>
     <a href="#tooltip">Tooltip</a>
+    <a href="#datepicker">DatePicker</a>
   </nav>
 
   <main>
@@ -419,6 +420,43 @@
         <div class="code-blocks">
           <pre><code class="language-html" id="code-tooltip-html"></code></pre>
           <pre><code class="language-javascript" id="code-tooltip-js"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="component-category" id="datepicker">DatePicker</h2>
+
+    <!-- ───── DatePicker ─────────────────────────────────────────────── -->
+    <section class="component">
+      <h3>Date picker</h3>
+      <p class="component-desc">
+        Attaches to any <code>input[type=text]</code> and opens a popup calendar
+        on click or focus. Type a date directly or pick from the calendar — the
+        calendar navigates live as you type. Navigate months and years with the
+        header buttons or keyboard. Configurable week start (Mon/Sun), date
+        format, and <code>onSelect</code> callback.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <div>
+            <label for="dp-default" class="demo-field-label">Mon start — YYYY-MM-DD</label>
+            <input type="text" id="dp-default" class="demo-input" placeholder="Pick a date">
+          </div>
+          <div>
+            <label for="dp-us" class="demo-field-label">Sun start — MM/DD/YYYY</label>
+            <input type="text" id="dp-us" class="demo-input" placeholder="Pick a date">
+          </div>
+          <output id="datepicker-result" class="demo-output">No date selected.</output>
+          <div style="display:flex;gap:8px">
+            <button id="dp-clear" type="button" class="demo-trigger">Clear (API)</button>
+            <button id="dp-set-today" type="button" class="demo-trigger">Set today (API)</button>
+          </div>
+        </div>
+
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-datepicker-html"></code></pre>
+          <pre><code class="language-javascript" id="code-datepicker-js"></code></pre>
         </div>
       </div>
     </section>

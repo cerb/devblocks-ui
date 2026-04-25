@@ -6,7 +6,7 @@ This file is the canonical context for any Claude session working on this repo. 
 
 Devblocks UI is a hand-rolled, zero-dependency UI component library — TypeScript + Vite + Sass — built to replace jQuery UI in Cerb (enterprise CRM) but designed as a general-purpose library. Anyone should be able to drop the dist into a plain HTML page (IIFE → `window.DevblocksUI`) or import the ESM from a modern bundler.
 
-Currently ships: **Menu** (cascading, virtualizes 5000+ items, inline mode), **Toggle** (animated binary switch for `input[type=checkbox]`), **Spinner** (CSS loading indicator), **Tabs** (anchor + Ajax panels, full keyboard nav), **Dialog** (floating, draggable, resizable window — near-drop-in replacement for jQuery UI dialog).
+Currently ships: **Menu** (cascading, virtualizes 5000+ items, inline mode), **Toggle** (animated binary switch for `input[type=checkbox]`), **Spinner** (CSS loading indicator), **Tabs** (anchor + Ajax panels, full keyboard nav), **Dialog** (floating, draggable, resizable window — near-drop-in replacement for jQuery UI dialog), **Tooltip** (floating tip with directional arrow, auto-flips above/below), **DatePicker** (popup calendar, month/year navigation, configurable week start and date format, type-to-navigate, focus stays in input on click).
 
 ## Conventions (apply to every component)
 
@@ -50,6 +50,15 @@ src/
     types.ts             # DialogOptions
     icons.ts             # constant SVG strings (minimize, restore, close)
     index.ts             # re-exports
+  tooltip/
+    tooltip.ts           # Tooltip class (floating tip with directional arrow)
+    types.ts             # TooltipOptions
+    index.ts             # re-exports
+  datepicker/
+    datepicker.ts        # DatePicker class (popup calendar)
+    types.ts             # DatePickerOptions
+    icons.ts             # constant SVG strings (prev/next month and year chevrons)
+    index.ts             # re-exports
 styles/
   tokens.scss            # CSS custom properties (light + dark)
   menu.scss              # all .dui-menu-* rules; uses var(--dui-*) only
@@ -57,6 +66,8 @@ styles/
   spinner.scss           # all .dui-spinner-* rules
   tabs.scss              # all .dui-tab-* rules
   dialog.scss            # all .dui-dialog-* rules
+  tooltip.scss           # all .dui-tooltip-* rules
+  datepicker.scss        # all .dui-datepicker-* rules
   index.scss             # @use 'tokens'; @use each component
 examples/
   index.html             # demo page (served by `npm run dev`)

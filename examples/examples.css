@@ -158,6 +158,31 @@ body.page-dark .component {
 body.page-dark .demo-trigger { background: #3b82f6; }
 body.page-dark .demo-trigger:hover { background: #2563eb; }
 
+.demo-field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  opacity: 0.75;
+}
+
+.demo-input {
+  display: block;
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #111827;
+  background: #ffffff;
+}
+body.page-dark .demo-input {
+  border-color: #374151;
+  background: #1f2937;
+  color: #f3f4f6;
+}
+
 .demo-output {
   font-family: 'SF Mono', Menlo, Consolas, monospace;
   font-size: 12px;

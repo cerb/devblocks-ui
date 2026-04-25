@@ -16,9 +16,10 @@
   --dui-radius:    6px;
   --dui-font-size: 13px;
   --dui-item-pad:  10px;
-  --dui-z-tooltip: 9998;
-  --dui-z-menu:    9999;
-  --dui-z-dialog:  10000;
+  --dui-z-tooltip:     9998;
+  --dui-z-menu:        9999;
+  --dui-z-dialog:      10000;
+  --dui-z-datepicker:  10001;
 
   // Dialog
   --dui-dialog-titlebar-bg: var(--dui-accent-bg);
@@ -34,6 +35,11 @@
 
   // Tabs
   --dui-tab-hover-bg: rgba(0, 0, 0, 0.04);
+
+  // DatePicker
+  --dui-datepicker-weekday-fg: #6b7280;
+  --dui-datepicker-other-fg:   #9ca3af;
+  --dui-datepicker-hover-bg:   rgba(0, 0, 0, 0.06);
 }
 
 [data-dui-theme="dark"] {
@@ -51,4 +57,9 @@
 
   // Tabs
   --dui-tab-hover-bg: rgba(255, 255, 255, 0.06);
+
+  // DatePicker
+  --dui-datepicker-weekday-fg: #9ca3af;
+  --dui-datepicker-other-fg:   #4b5563;
+  --dui-datepicker-hover-bg:   rgba(255, 255, 255, 0.08);
 }
