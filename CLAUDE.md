@@ -6,9 +6,9 @@ This file is the canonical context for any Claude session working on this repo. 
 
 Devblocks UI is a hand-rolled, zero-dependency UI component library — TypeScript + Vite + Sass — built to replace jQuery UI in Cerb (enterprise CRM) but designed as a general-purpose library. Anyone should be able to drop the dist into a plain HTML page (IIFE → `window.DevblocksUI`) or import the ESM from a modern bundler.
 
-Currently ships: **Menu** (cascading menu with virtualization for 5000+ items).
+Currently ships: **Menu** (cascading, virtualizes 5000+ items, inline mode), **Toggle** (animated binary switch for `input[type=checkbox]`), **Spinner** (CSS loading indicator), **Tabs** (anchor + Ajax panels, full keyboard nav).
 
-Planned next: **Tabs**, **Dialog** — both intended as near-drop-in replacements for the corresponding jQuery UI widgets. Don't design these speculatively; wait for jeff@cerb.ai to provide jQuery UI usage examples to mirror.
+Planned next: **Dialog** — intended as a near-drop-in replacement for the jQuery UI dialog widget. Don't design it speculatively; wait for jeff@cerb.ai to provide jQuery UI usage examples to mirror.
 
 ## Conventions (apply to every component)
 
@@ -29,21 +29,39 @@ Planned next: **Tabs**, **Dialog** — both intended as near-drop-in replacement
 ```
 src/
   index.ts               # public entry — re-exports each component, registers jQuery plugin
-  jquery-plugin.ts       # $.fn.duiMenu (and future $.fn.duiTabs, $.fn.duiDialog)
+  jquery-plugin.ts       # $.fn.duiMenu / duiToggle / duiTabs (and future duiDialog)
   menu/
-    menu.ts              # Menu class
+    menu.ts              # Menu class (floating + inline modes)
     parse.ts             # parseUl()
     icons.ts             # constant SVG strings (only innerHTML source for Menu)
     types.ts             # MenuOptions, MenuItem
     index.ts             # re-exports
+  toggle/
+    toggle.ts            # Toggle class
+    types.ts             # ToggleOptions
+    index.ts             # re-exports
+  spinner/
+    spinner.ts           # Spinner class
+    icons.ts             # spinner SVG/animation element
+    index.ts             # re-exports
+  tabs/
+    tabs.ts              # Tabs class (anchor + Ajax panels)
+    types.ts             # TabsOptions, TabInfo
+    index.ts             # re-exports
 styles/
   tokens.scss            # CSS custom properties (light + dark)
   menu.scss              # all .dui-menu-* rules; uses var(--dui-*) only
-  index.scss             # @use 'tokens'; @use 'menu'; (and future @use 'tabs', etc.)
+  toggle.scss            # all .dui-toggle-* rules
+  spinner.scss           # all .dui-spinner-* rules
+  tabs.scss              # all .dui-tab-* rules
+  index.scss             # @use 'tokens'; @use each component
 examples/
   index.html             # demo page (served by `npm run dev`)
   main.ts                # demo wiring + sample code displayed in <pre>
   examples.css           # demo-page styling — NOT shipped
+  ajax/
+    tab-a.html           # fixture fragment for the dynamic Tabs demo
+    tab-b.html           # fixture fragment for the dynamic Tabs demo
 dist/                    # build output (gitignored)
 ```
 
@@ -62,12 +80,12 @@ The `npm run build:js` step uses `vite build` in library mode (see `vite.config.
 
 For UI-affecting changes, run `npm run dev`, open http://localhost:5173/, exercise the demos manually. Type checking does not catch UI regressions.
 
-## Adding a new component (e.g. Tabs)
+## Adding a new component (e.g. Dialog)
 
-1. `src/tabs/{tabs.ts,types.ts,index.ts}` — class + types. Add icon files only if needed.
-2. Re-export from `src/index.ts`: `export { Tabs } from './tabs/tabs';` plus `export type { TabsOptions } from './tabs/types';`.
-3. `styles/tabs.scss` — use only `var(--dui-*)` tokens. Add new tokens to `styles/tokens.scss` (with both light + dark values) before referencing them. Then `@use 'tabs';` from `styles/index.scss`.
-4. Extend the jQuery plugin in `src/jquery-plugin.ts` — add a `$.fn.duiTabs` registration alongside `duiMenu`. Same `typeof jQuery !== 'undefined'` gating.
+1. `src/dialog/{dialog.ts,types.ts,index.ts}` — class + types. Add icon files only if needed.
+2. Re-export from `src/index.ts`: `export { Dialog } from './dialog/dialog';` plus `export type { DialogOptions } from './dialog/types';`.
+3. `styles/dialog.scss` — use only `var(--dui-*)` tokens. Add new tokens to `styles/tokens.scss` (with both light + dark values) before referencing them. Then `@use 'dialog';` from `styles/index.scss`.
+4. Extend the jQuery plugin in `src/jquery-plugin.ts` — add a `$.fn.duiDialog` registration alongside the others. Same `typeof jQuery !== 'undefined'` gating.
 5. Add a `<section class="component">` to `examples/index.html` and a wiring block to `examples/main.ts` with at least one live demo and a runnable code snippet (Prism highlights it via the CDN script already loaded).
 6. Run `npm run typecheck && npm run build && npm run dev` and verify in a browser.
 

@@ -8,8 +8,10 @@ Built to replace jQuery UI with hand-rolled components that are small, fast, and
 
 | Component | Status                       |
 | --------- | ---------------------------- |
-| Menu      | Available — virtualizes 5000+ items, full keyboard nav |
-| Tabs      | Planned                      |
+| Menu      | Available — cascading, virtualizes 5000+ items, inline mode, full keyboard nav |
+| Toggle    | Available — animated binary switch wrapping `input[type=checkbox]` |
+| Spinner   | Available — CSS-animated loading indicator |
+| Tabs      | Available — anchor (static) and dynamic (Ajax) panels, full keyboard nav |
 | Dialog    | Planned                      |
 
 ## Install
@@ -106,17 +108,58 @@ Available tokens are defined in [`styles/tokens.scss`](./styles/tokens.scss).
 ```ts
 interface MenuOptions {
   onSelect?:      (renderedLi: HTMLLIElement, sourceLi: HTMLLIElement) => void;
-  itemHeight?:    number;  // default 28 (px) — must match CSS .dui-menu-item height
-  maxHeight?:     number;  // default 380 — max panel height before scroll
-  virtThreshold?: number;  // default 60 — virtualize panels with more items than this
-  openDelay?:     number;  // default 80 (ms) — hover delay before submenu opens
-  virtBuffer?:    number;  // default 6 — extra rows above/below the visible window
+  itemHeight?:    number;   // default 28 (px) — must match CSS .dui-menu-item height
+  maxHeight?:     number;   // default 380 — max panel height before scroll
+  virtThreshold?: number;   // default 60 — virtualize panels with more items than this
+  openDelay?:     number;   // default 80 (ms) — hover delay before submenu opens
+  virtBuffer?:    number;   // default 6 — extra rows above/below the visible window
+  inline?:        boolean;  // default false — render root panel in document flow
 }
 ```
 
-Public methods: `open(anchor)`, `close()`, `isOpen()`, `destroy()`.
+Public methods: `open(anchor?)`, `close()`, `isOpen()`, `destroy()`.
 
-The Menu reads its source `<ul>` once at construction time. The source `<ul>` can be hidden — rendered panels are appended to `<body>` with `position: fixed`. `data-*` attributes on each source `<li>` are mirrored onto the rendered `<li>` and available as the second arg of `onSelect`.
+The Menu reads its source `<ul>` once at construction time. The source `<ul>` can be hidden. In normal mode, rendered panels are appended to `<body>` with `position: fixed`. In inline mode (`inline: true`), the root panel is inserted after the source `<ul>` in document flow and the menu opens automatically on construction; submenus still float. `data-*` attributes on each source `<li>` are mirrored onto the rendered `<li>` and available as the second arg of `onSelect`.
+
+## Toggle — options
+
+```ts
+interface ToggleOptions {
+  onChange?: (checked: boolean, input: HTMLInputElement) => void;
+}
+```
+
+Pass an `input[type=checkbox]` element. The Toggle wraps it in an animated binary switch — the native input stays accessible and submits with its form normally. Programmatic control: `toggle.checked = true/false` (does not fire `onChange`).
+
+## Spinner
+
+```ts
+const spinner = new Spinner();
+someElement.appendChild(spinner.el);  // spinner.el is a <span>
+spinner.destroy();                     // removes the element
+```
+
+CSS-animated loading indicator. Used internally by Tabs while dynamic panels load; also usable standalone.
+
+## Tabs — options
+
+```ts
+interface TabsOptions {
+  active?:          number;   // initial selected tab index (default 0)
+  onBeforeTabLoad?: (index: number, tab: TabInfo) => boolean | void;  // return false to cancel
+  onTabSelected?:   (index: number, tab: TabInfo) => void;
+}
+
+interface TabInfo {
+  li:        HTMLLIElement;
+  href:      string;
+  isDynamic: boolean;   // true when href is a URL (Ajax tab), false for #anchor tabs
+}
+```
+
+Public methods: `select(index)`, `get active()`, `refresh(index)`, `sync()`, `destroy()`.
+
+Pass a `<ul>` of `<li><a href="...">` items. Anchor tabs (`href="#id"`) toggle a sibling `<div id="id">`. Dynamic tabs (`href="/some/url"`) fetch their content on first click and cache it; call `refresh(index)` to force a reload. Arrow keys navigate; Space/Enter activate.
 
 ## Build from source
 
