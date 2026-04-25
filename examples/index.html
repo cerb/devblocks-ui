@@ -435,8 +435,8 @@
         Attaches to any <code>input[type=text]</code> and opens a popup calendar
         on click or focus. Type a date directly or pick from the calendar — the
         calendar navigates live as you type. Navigate months and years with the
-        header buttons or keyboard. Configurable week start (Mon/Sun), date
-        format, and <code>onSelect</code> callback.
+        header buttons or keyboard. Configurable week start (Mon/Sun), output
+        format, parse format (for pre-existing values), and <code>onSelect</code> callback.
       </p>
 
       <div class="demo-grid">
@@ -459,6 +459,33 @@
         <div class="code-blocks">
           <pre><code class="language-html" id="code-datepicker-html"></code></pre>
           <pre><code class="language-javascript" id="code-datepicker-js"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="component">
+      <h3>Date picker — button trigger</h3>
+      <p class="component-desc">
+        Use <code>trigger: 'button'</code> when the input has its own autocomplete
+        that would conflict with the calendar opening on focus. A toggle button is
+        inserted immediately after the input and becomes the sole open trigger.
+        Typing navigates the calendar only when it is already open.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <div style="display:flex;align-items:center;gap:4px">
+            <label for="dp-btn" class="demo-field-label">Button trigger</label>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px">
+            <input type="text" id="dp-btn" class="demo-input" placeholder="Pick a date">
+          </div>
+          <output id="datepicker-btn-result" class="demo-output">No date selected.</output>
+        </div>
+
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-datepicker-btn-html"></code></pre>
+          <pre><code class="language-javascript" id="code-datepicker-btn-js"></code></pre>
         </div>
       </div>
     </section>

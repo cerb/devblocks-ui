@@ -586,7 +586,7 @@ document.getElementById('tooltip-trigger').addEventListener('click', () => {
     document.getElementById('dp-default') as HTMLInputElement,
     {
       startOfWeek:  'mon',
-      format:       'YYYY-MM-DD',
+      outputFormat: 'YYYY-MM-DD',
       onSelect: (_date, formatted) => {
         result.textContent = `Selected (default): ${formatted}`;
       },
@@ -596,8 +596,8 @@ document.getElementById('tooltip-trigger').addEventListener('click', () => {
   const dpUS = new DatePicker(
     document.getElementById('dp-us') as HTMLInputElement,
     {
-      startOfWeek: 'sun',
-      format:      'MM/DD/YYYY',
+      startOfWeek:  'sun',
+      outputFormat: 'MM/DD/YYYY',
       onSelect: (_date, formatted) => {
         result.textContent = `Selected (US): ${formatted}`;
       },
@@ -628,24 +628,63 @@ document.getElementById('tooltip-trigger').addEventListener('click', () => {
 (document.getElementById('code-datepicker-js') as HTMLElement).textContent = `
 import { DatePicker } from 'devblocks-ui';
 
-// Mon-start calendar, ISO format (default)
+// Mon-start calendar, ISO output format (default)
 const dp = new DatePicker(document.getElementById('my-date'), {
-  startOfWeek: 'mon',        // 'mon' | 'sun'  (default 'mon')
-  format:      'YYYY-MM-DD', // default
-  defaultDate: null,         // Date | string | null
+  startOfWeek:  'mon',        // 'mon' | 'sun'  (default: 'mon')
+  outputFormat: 'YYYY-MM-DD', // written to input after selection (default: 'YYYY-MM-DD')
+  parseFormat:  'YYYY-MM-DD', // used to read a pre-existing input value on init
+                              //   (omit if same as outputFormat)
   onSelect: (date, formatted) => {
-    console.log(formatted);  // e.g. "2026-04-24"
+    console.log(formatted);   // e.g. "2026-04-24"
   },
 });
 
 // Programmatic control:
-dp.setDate(new Date());      // set to today
-dp.setDate('2026-12-25');    // set by string (parsed with format)
-dp.setDate(null);            // clear
-dp.getDate();                // → Date | null
-dp.open();                   // open popup
-dp.close();                  // close popup
-dp.destroy();                // remove popup, detach listeners
+dp.setDate(new Date());       // set to today
+dp.setDate('2026-12-25');     // set by string (parsed with outputFormat)
+dp.setDate(null);             // clear
+dp.getDate();                 // → Date | null
+dp.open();                    // open popup
+dp.close();                   // close popup
+dp.destroy();                 // remove popup, detach listeners
+`.trim();
+
+// ── Demo: datepicker — button trigger ────────────────────────────────────
+
+{
+  const result = document.getElementById('datepicker-btn-result') as HTMLElement;
+
+  const dpBtn = new DatePicker(
+    document.getElementById('dp-btn') as HTMLInputElement,
+    {
+      trigger:      'button',
+      outputFormat: 'YYYY-MM-DD',
+      onSelect: (_date, formatted) => {
+        result.textContent = `Selected: ${formatted}`;
+      },
+    },
+  );
+
+  (window as unknown as Record<string, unknown>)['dpBtn'] = dpBtn;
+}
+
+(document.getElementById('code-datepicker-btn-html') as HTMLElement).textContent = `
+<input type="text" id="my-date" placeholder="Pick a date">
+`.trim();
+
+(document.getElementById('code-datepicker-btn-js') as HTMLElement).textContent = `
+import { DatePicker } from 'devblocks-ui';
+
+// trigger: 'button' — a toggle button is inserted after the input.
+// The calendar does not open on focus or click; only the button opens it.
+// Use this when the input has its own autocomplete.
+const dp = new DatePicker(document.getElementById('my-date'), {
+  trigger:      'button',
+  outputFormat: 'YYYY-MM-DD',
+  onSelect: (date, formatted) => {
+    console.log(formatted);
+  },
+});
 `.trim();
 
 // ── Demo: selectmenu — basic ──────────────────────────────────────────

@@ -1,19 +1,23 @@
 import type { DatePickerOptions } from './types';
-import { PREV_YEAR_SVG, PREV_MONTH_SVG, NEXT_MONTH_SVG, NEXT_YEAR_SVG } from './icons';
+import { PREV_YEAR_SVG, PREV_MONTH_SVG, NEXT_MONTH_SVG, NEXT_YEAR_SVG, TOGGLE_SVG } from './icons';
 
-type ResolvedOpts = Required<Omit<DatePickerOptions, 'onSelect'>> & Pick<DatePickerOptions, 'onSelect'>;
+// parseFormat is intentionally omitted from Required — undefined means "fall back to outputFormat".
+type ResolvedOpts = Required<Omit<DatePickerOptions, 'onSelect' | 'parseFormat'>> & Pick<DatePickerOptions, 'onSelect' | 'parseFormat'>;
 
 const DEFAULTS: ResolvedOpts = {
-  startOfWeek: 'mon',
-  format:      'YYYY-MM-DD',
-  defaultDate: null,
-  onSelect:    null,
+  startOfWeek:  'mon',
+  outputFormat: 'YYYY-MM-DD',
+  trigger:      'auto',
+  onSelect:     null,
 };
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
+
+const MONTH_ABBREVS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const DAY_ABBREVS   = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const WEEKDAY_ABBREVS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
@@ -36,22 +40,24 @@ export class DatePicker {
   private docClick:   ((e: MouseEvent)   => void) | null = null;
   private docKeydown: ((e: KeyboardEvent) => void) | null = null;
 
+  // Only used in 'auto' trigger mode.
   // pointerdown fires before focus; set this flag so onInputFocus can yield to onInputClick.
   private _pointerDown = false;
-  // prevents focus handler from reopening after our own inputEl.focus() calls.
+  // Prevents the focus handler from reopening after our own inputEl.focus() calls.
   private _ignoreNextFocus = false;
+
+  // Only present in 'button' trigger mode.
+  private toggleBtn: HTMLButtonElement | null = null;
 
   constructor(inputEl: HTMLInputElement, opts: DatePickerOptions = {}) {
     this.inputEl = inputEl;
     this.uid     = ++DatePicker._uid;
 
-    const rawDefault = opts.defaultDate ?? null;
-    const defaultDate =
-      rawDefault instanceof Date ? rawDefault
-      : typeof rawDefault === 'string' ? this.parseDate(rawDefault, opts.format ?? DEFAULTS.format)
-      : null;
+    this.opts = { ...DEFAULTS, ...opts };
 
-    this.opts = { ...DEFAULTS, ...opts, defaultDate };
+    const existingVal = inputEl.value.trim();
+    const initFmt     = this.opts.parseFormat ?? this.opts.outputFormat;
+    const defaultDate = existingVal ? this.parseDate(existingVal, initFmt) : null;
 
     const seed = defaultDate ?? new Date();
     this.viewYear     = seed.getFullYear();
@@ -83,19 +89,43 @@ export class DatePicker {
 
     this.renderGrid();
 
-    if (defaultDate) {
-      this.inputEl.value = this.formatDate(defaultDate);
-    }
-
     this.inputEl.setAttribute('autocomplete', 'off');
-    this.inputEl.addEventListener('pointerdown', this.onInputPointerdown);
-    this.inputEl.addEventListener('focus',       this.onInputFocus);
-    this.inputEl.addEventListener('click',       this.onInputClick);
-    this.inputEl.addEventListener('input',       this.onInputInput);
-    this.inputEl.addEventListener('keydown',     this.onInputKeydown);
+    this.inputEl.addEventListener('input',   this.onInputInput);
+    this.inputEl.addEventListener('keydown', this.onInputKeydown);
+
+    if (this.opts.trigger === 'button') {
+      this.toggleBtn = this.buildToggleBtn();
+      this.inputEl.insertAdjacentElement('afterend', this.toggleBtn);
+    } else {
+      this.inputEl.addEventListener('pointerdown', this.onInputPointerdown);
+      this.inputEl.addEventListener('focus',       this.onInputFocus);
+      this.inputEl.addEventListener('click',       this.onInputClick);
+    }
   }
 
   // ── DOM builders ────────────────────────────────────────────────────────
+
+  private buildToggleBtn(): HTMLButtonElement {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'dui-datepicker-toggle';
+    btn.setAttribute('aria-label', 'Open calendar');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-haspopup', 'dialog');
+    btn.setAttribute('aria-controls', `dui-datepicker-${this.uid}`);
+    btn.innerHTML = TOGGLE_SVG; // constant SVG, not user data
+    btn.addEventListener('click', this.onToggleClick);
+    return btn;
+  }
+
+  private onToggleClick = (): void => {
+    if (this.isOpen()) {
+      this.close();
+      this.inputEl.focus();
+    } else {
+      this.openAndFocus();
+    }
+  };
 
   private buildHeader(): HTMLElement {
     const header = document.createElement('div');
@@ -237,12 +267,14 @@ export class DatePicker {
     const y = date.getFullYear();
     const m = date.getMonth() + 1;
     const d = date.getDate();
-    return this.opts.format.replace(/YYYY|YY|MM|M|DD|D/g, (token) => {
+    return this.opts.outputFormat.replace(/YYYY|YY|MMM|MM|M|DDD|DD|D/g, (token) => {
       switch (token) {
         case 'YYYY': return String(y);
         case 'YY':   return String(y).slice(-2);
+        case 'MMM':  return MONTH_ABBREVS[m - 1]!;
         case 'MM':   return String(m).padStart(2, '0');
         case 'M':    return String(m);
+        case 'DDD':  return DAY_ABBREVS[date.getDay()]!;
         case 'DD':   return String(d).padStart(2, '0');
         case 'D':    return String(d);
         default:     return token;
@@ -255,9 +287,13 @@ export class DatePicker {
       const tokens: string[] = [];
       const escapedFmt = fmt
         .replace(/[-/.()\[\]{}^$*+?|\\]/g, '\\$&')
-        .replace(/YYYY|YY|MM|M|DD|D/g, (t) => { tokens.push(t); return '(\\d+)'; });
+        .replace(/YYYY|YY|MMM|MM|M|DDD|DD|D/g, (t) => {
+          tokens.push(t);
+          return (t === 'MMM' || t === 'DDD') ? '([A-Za-z]{3})' : '(\\d+)';
+        });
 
-      const match = str.match(new RegExp('^' + escapedFmt + '$'));
+      // No trailing $ — allows optional time suffixes like " 12:00 am" to be ignored.
+      const match = str.match(new RegExp('^' + escapedFmt));
       if (!match) return null;
 
       let year = new Date().getFullYear();
@@ -265,15 +301,20 @@ export class DatePicker {
       let day = 1;
 
       tokens.forEach((token, i) => {
-        const val = parseInt(match[i + 1]!, 10);
-        if (isNaN(val)) return;
+        const raw = match[i + 1]!;
         switch (token) {
-          case 'YYYY': year = val; break;
-          case 'YY':   year = 2000 + val; break;
+          case 'YYYY': year = parseInt(raw, 10); break;
+          case 'YY':   year = 2000 + parseInt(raw, 10); break;
+          case 'MMM': {
+            const idx = MONTH_ABBREVS.findIndex(a => a.toLowerCase() === raw.toLowerCase());
+            if (idx !== -1) month = idx;
+            break;
+          }
           case 'MM':
-          case 'M':    month = val - 1; break;
+          case 'M':    month = parseInt(raw, 10) - 1; break;
+          case 'DDD':  break; // weekday name — position consumed, value ignored
           case 'DD':
-          case 'D':    day = val; break;
+          case 'D':    day = parseInt(raw, 10); break;
         }
       });
 
@@ -311,9 +352,8 @@ export class DatePicker {
     this.inputEl.dispatchEvent(new Event('change', { bubbles: true }));
     this.opts.onSelect?.(date, formatted);
     this.close();
-    // Only steal focus back to input when it wasn't already there (e.g. day button click).
     if (document.activeElement !== this.inputEl) {
-      this._ignoreNextFocus = true;
+      if (this.opts.trigger === 'auto') this._ignoreNextFocus = true;
       this.inputEl.focus();
     }
   }
@@ -351,6 +391,10 @@ export class DatePicker {
     this.el.removeAttribute('hidden');
     this.position();
     this.attachDocListeners();
+    if (this.toggleBtn) {
+      this.toggleBtn.setAttribute('aria-expanded', 'true');
+      this.toggleBtn.setAttribute('aria-label', 'Close calendar');
+    }
   }
 
   // Opens and moves keyboard focus into the grid (for click / tab interactions).
@@ -369,6 +413,10 @@ export class DatePicker {
     this.el.setAttribute('hidden', '');
     if (this.docClick)   { document.removeEventListener('click',   this.docClick);   this.docClick   = null; }
     if (this.docKeydown) { document.removeEventListener('keydown', this.docKeydown); this.docKeydown = null; }
+    if (this.toggleBtn) {
+      this.toggleBtn.setAttribute('aria-expanded', 'false');
+      this.toggleBtn.setAttribute('aria-label', 'Open calendar');
+    }
   }
 
   isOpen(): boolean {
@@ -377,7 +425,8 @@ export class DatePicker {
 
   private attachDocListeners(): void {
     this.docClick = (e: MouseEvent) => {
-      if (!this.el.contains(e.target as Node) && e.target !== this.inputEl) {
+      const t = e.target as Node;
+      if (!this.el.contains(t) && t !== this.inputEl && t !== this.toggleBtn) {
         this.close();
       }
     };
@@ -385,10 +434,9 @@ export class DatePicker {
       if (e.key === 'Escape') {
         e.preventDefault();
         this.close();
-        // Only call focus() if the input doesn't already have it; otherwise
-        // the focus event would fire and _ignoreNextFocus would linger.
         if (document.activeElement !== this.inputEl) {
-          this._ignoreNextFocus = true;
+          // In 'auto' mode suppress the focus handler so it doesn't reopen.
+          if (this.opts.trigger === 'auto') this._ignoreNextFocus = true;
           this.inputEl.focus();
         }
       } else if (e.key === 'Tab') {
@@ -464,14 +512,14 @@ export class DatePicker {
   };
 
   // Live-parse the typed value and navigate the calendar to match.
-  // Also reopens the calendar if it was dismissed while the input still has focus.
+  // In 'auto' mode, also reopens the calendar if it was dismissed while the input still has focus.
   private onInputInput = (): void => {
     if (!this.isOpen()) {
-      if (this.inputEl.value.trim()) this.open(); // show without stealing focus
+      if (this.opts.trigger === 'auto' && this.inputEl.value.trim()) this.open();
     }
     if (!this.isOpen()) return;
 
-    const parsed = this.parseDate(this.inputEl.value, this.opts.format);
+    const parsed = this.parseDate(this.inputEl.value, this.opts.outputFormat);
     if (parsed) {
       this.selectedDate = parsed;
       this.viewYear  = parsed.getFullYear();
@@ -484,7 +532,7 @@ export class DatePicker {
   private onInputKeydown = (e: KeyboardEvent): void => {
     if (!this.isOpen()) return;
     if (e.key === 'Enter') {
-      const parsed = this.parseDate(this.inputEl.value, this.opts.format);
+      const parsed = this.parseDate(this.inputEl.value, this.opts.outputFormat);
       if (parsed) { e.preventDefault(); this.selectDate(parsed); }
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -499,7 +547,7 @@ export class DatePicker {
       this.selectedDate = null;
       this.inputEl.value = '';
     } else {
-      const d = date instanceof Date ? date : this.parseDate(date, this.opts.format);
+      const d = date instanceof Date ? date : this.parseDate(date, this.opts.outputFormat);
       this.selectedDate = d;
       if (d) this.inputEl.value = this.formatDate(d);
     }
@@ -516,11 +564,16 @@ export class DatePicker {
 
   destroy(): void {
     this.close();
-    this.inputEl.removeEventListener('pointerdown', this.onInputPointerdown);
-    this.inputEl.removeEventListener('focus',       this.onInputFocus);
-    this.inputEl.removeEventListener('click',       this.onInputClick);
-    this.inputEl.removeEventListener('input',       this.onInputInput);
-    this.inputEl.removeEventListener('keydown',     this.onInputKeydown);
+    this.inputEl.removeEventListener('input',   this.onInputInput);
+    this.inputEl.removeEventListener('keydown', this.onInputKeydown);
+    if (this.toggleBtn) {
+      this.toggleBtn.removeEventListener('click', this.onToggleClick);
+      this.toggleBtn.remove();
+    } else {
+      this.inputEl.removeEventListener('pointerdown', this.onInputPointerdown);
+      this.inputEl.removeEventListener('focus',       this.onInputFocus);
+      this.inputEl.removeEventListener('click',       this.onInputClick);
+    }
     this.el.remove();
   }
 }

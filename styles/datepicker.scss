@@ -1,3 +1,29 @@
+// ── Input trigger button (trigger: 'button' mode) ────────────────────────
+
+.dui-datepicker-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  background: transparent;
+  border: 1px solid var(--dui-border);
+  cursor: pointer;
+  color: var(--dui-fg);
+  padding: 4px 5px;
+  border-radius: var(--dui-radius);
+  line-height: 0;
+  transition: background 0.1s;
+
+  &:hover {
+    background: var(--dui-datepicker-hover-bg);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--dui-accent-bg);
+    outline-offset: 1px;
+  }
+}
+
 .dui-datepicker {
   position: absolute;
   z-index: var(--dui-z-datepicker);
