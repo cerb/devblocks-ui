@@ -18,6 +18,9 @@
 export { Menu } from './menu/menu';
 export type { MenuOptions, MenuItem } from './menu/types';
 
+export { Toggle } from './toggle/toggle';
+export type { ToggleOptions } from './toggle/types';
+
 import { registerJQueryPlugin } from './jquery-plugin';
 
 if (typeof window !== 'undefined') {

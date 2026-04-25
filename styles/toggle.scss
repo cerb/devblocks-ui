@@ -1,0 +1,68 @@
+// Devblocks UI — Toggle
+// Pair with an input[type=checkbox] that has .dui-toggle-input.
+// The visual .dui-toggle span must be the immediate next sibling of the input
+// so the :focus-visible and :disabled adjacent-sibling selectors resolve.
+
+.dui-toggle {
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+  line-height: 0;
+  user-select: none;
+
+  // Safari does not reliably bubble click events from SVG child elements
+  // (<rect>, <circle>) to the parent HTML element. pointer-events: none
+  // on the SVG means all clicks land on this span instead, which fires
+  // correctly in every browser.
+  svg {
+    pointer-events: none;
+  }
+
+  .dui-toggle-track {
+    fill: var(--dui-toggle-off);
+    transition: fill 0.15s ease;
+  }
+
+  .dui-toggle-knob {
+    fill: var(--dui-toggle-knob);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+    transition: transform 0.15s ease;
+  }
+
+  &.dui-toggle--checked {
+    .dui-toggle-track {
+      fill: var(--dui-toggle-on);
+    }
+
+    // Knob travels from cx=11 to cx=29 (+18px).
+    .dui-toggle-knob {
+      transform: translateX(18px);
+    }
+  }
+}
+
+// Visually hidden but accessible: still in tab order, still submits with form.
+.dui-toggle-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+
+  // Disabled: mute the visual track and block pointer events on it.
+  &:disabled + .dui-toggle {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  // Keyboard focus ring drawn on the visual track, not the hidden input.
+  &:focus-visible + .dui-toggle {
+    outline: 2px solid var(--dui-accent-bg);
+    outline-offset: 3px;
+    border-radius: 11px;
+  }
+}

@@ -17,6 +17,11 @@
   --dui-font-size: 13px;
   --dui-item-pad:  10px;
   --dui-z-menu:    9999;
+
+  // Toggle
+  --dui-toggle-off:  #9ca3af;
+  --dui-toggle-on:   var(--dui-accent-bg);
+  --dui-toggle-knob: #ffffff;
 }
 
 [data-dui-theme="dark"] {
@@ -27,4 +32,8 @@
   --dui-accent-bg: #3b82f6;
   --dui-accent-fg: #ffffff;
   --dui-arrow-op:  0.55;
+
+  // Toggle
+  --dui-toggle-off:  #4b5563;
+  --dui-toggle-knob: #f9fafb;
 }

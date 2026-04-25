@@ -23,9 +23,11 @@
 
   <main>
 
+    <h2 class="component-category">Menu</h2>
+
     <!-- ───── Menu — small static ──────────────────────────────────── -->
     <section class="component">
-      <h2>Menu — small static</h2>
+      <h3>Small static</h3>
       <p class="component-desc">
         Drop-in cascading menu built from a hidden UL/LI tree.
         Open with the button, hover to expand submenus, click a leaf to select.
@@ -64,7 +66,7 @@
 
     <!-- ───── Menu — large virtualized ─────────────────────────────── -->
     <section class="component">
-      <h2>Menu — large (5000 items, virtualized)</h2>
+      <h3>Large (5000 items, virtualized)</h3>
       <p class="component-desc">
         Panels with more than <code>virtThreshold</code> items render only the
         visible window plus a small buffer. Total DOM nodes for the open panel
@@ -86,7 +88,7 @@
 
     <!-- ───── Menu — deep nested ───────────────────────────────────── -->
     <section class="component">
-      <h2>Menu — deep nested</h2>
+      <h3>Deep nested</h3>
       <p class="component-desc">
         Submenus open to the right of the active row and flip left or clamp
         to the viewport when they would overflow.
@@ -137,6 +139,40 @@
         </div>
 
         <pre><code class="language-javascript" id="code-menu-deep"></code></pre>
+      </div>
+    </section>
+
+    <h2 class="component-category">Toggle</h2>
+
+    <!-- ───── Toggle ────────────────────────────────────────────────── -->
+    <section class="component">
+      <h3>Binary switch</h3>
+      <p class="component-desc">
+        Enhances an <code>input[type=checkbox]</code> with an animated binary
+        switch. The native input is visually hidden but stays accessible —
+        screen readers interact with it directly, and it still submits with
+        its form. Click the track or the label text, or tab to it and press
+        Space.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <label class="toggle-label">
+            <input type="checkbox" id="toggle-wifi">
+            Wi-Fi
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" id="toggle-bt" checked>
+            Bluetooth
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" id="toggle-airplane" disabled>
+            Airplane mode (disabled)
+          </label>
+          <output id="toggle-result" class="demo-output">No change yet.</output>
+        </div>
+
+        <pre><code class="language-javascript" id="code-toggle"></code></pre>
       </div>
     </section>
 

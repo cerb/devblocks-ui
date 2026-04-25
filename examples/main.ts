@@ -1,4 +1,4 @@
-import { Menu } from 'devblocks-ui';
+import { Menu, Toggle } from 'devblocks-ui';
 import 'devblocks-ui/styles';
 
 declare const Prism: { highlightAllUnder: (root: ParentNode) => void } | undefined;
@@ -115,6 +115,43 @@ const menu = new Menu(document.querySelector('ul#menu-deep'), {
     console.log('region:', sourceLi.dataset.id);
   },
 });
+`.trim();
+
+// ── Demo: toggle ──────────────────────────────────────────────────────
+
+{
+  const result = document.getElementById('toggle-result') as HTMLElement;
+
+  (['toggle-wifi', 'toggle-bt', 'toggle-airplane'] as const).forEach((id) => {
+    const input = document.getElementById(id) as HTMLInputElement;
+    new Toggle(input, {
+      onChange: (checked, inp) => {
+        result.textContent = `${inp.id}: ${checked ? 'on' : 'off'}`;
+      },
+    });
+  });
+}
+
+(document.getElementById('code-toggle') as HTMLElement).textContent = `
+import { Toggle } from 'devblocks-ui';
+
+// Enhance a checkbox — keep label markup as-is.
+// <label>
+//   <input type="checkbox" id="my-toggle">
+//   My setting
+// </label>
+
+const t = new Toggle(document.getElementById('my-toggle'), {
+  onChange: (checked, input) => {
+    console.log(input.id, checked ? 'on' : 'off');
+  },
+});
+
+// Programmatic control (does not fire onChange):
+t.checked = true;
+
+// jQuery plugin (optional):
+// $('input[type=checkbox]').duiToggle({ onChange: fn });
 `.trim();
 
 // ── Highlight all code blocks once they're populated ──────────────────

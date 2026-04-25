@@ -1,5 +1,7 @@
 import { Menu } from './menu/menu';
 import type { MenuOptions } from './menu/types';
+import { Toggle } from './toggle/toggle';
+import type { ToggleOptions } from './toggle/types';
 
 interface PluginOptions extends MenuOptions {
   /** Trigger element (CSS selector or DOM element) that toggles the menu. */
@@ -27,23 +29,34 @@ interface JQueryStatic {
 export function registerJQueryPlugin(): void {
   const $ = (globalThis as { jQuery?: JQueryStatic }).jQuery;
   if (!$) return;
-  if ($.fn['duiMenu']) return;
 
-  $.fn['duiMenu'] = function (this: JQuery, opts: PluginOptions = {}): JQuery {
-    return this.each(function (this: HTMLElement) {
-      const ul = this as HTMLUListElement;
-      const menu = new Menu(ul, opts);
-      $(ul).data('duiMenu', menu);
+  if (!$.fn['duiMenu']) {
+    $.fn['duiMenu'] = function (this: JQuery, opts: PluginOptions = {}): JQuery {
+      return this.each(function (this: HTMLElement) {
+        const ul = this as HTMLUListElement;
+        const menu = new Menu(ul, opts);
+        $(ul).data('duiMenu', menu);
 
-      if (opts.trigger) {
-        const $trig = $(opts.trigger);
-        $trig.data('duiMenu', menu);
-        $trig.on('click', function (this: HTMLElement, e: Event) {
-          e.stopPropagation();
-          if (menu.isOpen()) menu.close();
-          else menu.open(this);
-        });
-      }
-    });
-  };
+        if (opts.trigger) {
+          const $trig = $(opts.trigger);
+          $trig.data('duiMenu', menu);
+          $trig.on('click', function (this: HTMLElement, e: Event) {
+            e.stopPropagation();
+            if (menu.isOpen()) menu.close();
+            else menu.open(this);
+          });
+        }
+      });
+    };
+  }
+
+  if (!$.fn['duiToggle']) {
+    $.fn['duiToggle'] = function (this: JQuery, opts: ToggleOptions = {}): JQuery {
+      return this.each(function (this: HTMLElement) {
+        const input = this as HTMLInputElement;
+        const t = new Toggle(input, opts);
+        $(input).data('duiToggle', t);
+      });
+    };
+  }
 }
