@@ -27,7 +27,7 @@ export default defineConfig(({ command }) => {
           format === 'es' ? 'devblocks-ui.esm.js' : 'devblocks-ui.js',
         formats: ['iife', 'es'],
       },
-      sourcemap: true,
+      sourcemap: false,
       cssCodeSplit: false,
       emptyOutDir: false,
     },
