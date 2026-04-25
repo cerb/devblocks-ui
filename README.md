@@ -15,6 +15,8 @@ Built to replace jQuery UI with hand-rolled components that are small, fast, and
 | Dialog     | Available — floating, draggable, resizable, minimize/restore, multi-instance z-index focus |
 | Tooltip    | Available — floating tip with directional arrow, auto-flips above/below |
 | DatePicker | Available — popup calendar, month/year navigation, configurable week start and format |
+| SelectMenu | Available — styled `<select>` replacement, type-to-filter, virtualizes 5000+ items |
+| Accordion  | Available — expand/collapse sections, CSS grid animation, keyboard nav |
 
 ## Install
 
@@ -234,6 +236,78 @@ Pass an `input[type=text]`. The calendar popup opens on click or focus and close
     format:      'MM/DD/YYYY',
     startOfWeek: 'sun',
     onSelect: (date, formatted) => console.log(formatted),
+  });
+</script>
+```
+
+## SelectMenu — options
+
+```ts
+interface SelectMenuOptions {
+  onSelect?:      (value: string, text: string, option: HTMLOptionElement) => void;
+  onRender?:      (li: HTMLLIElement, option: HTMLOptionElement) => void;
+  placeholder?:   string;   // text shown when the empty/placeholder option is selected
+  itemHeight?:    number;   // default 28 (px) — must match CSS .dui-selectmenu-item height
+  maxHeight?:     number;   // default 380 — max panel height before scroll
+  virtThreshold?: number;   // default 60 — virtualize panels with more items than this
+  virtBuffer?:    number;   // default 6 — extra rows above/below the visible window
+}
+```
+
+Public methods: `open()`, `close()`, `isOpen()`, `getValue()`, `setValue(value)`, `destroy()`.
+
+Pass a `<select>` element. SelectMenu replaces the native browser control with a styled trigger button and floating panel while keeping the underlying `<select>` in sync for form submission. Type any characters while the panel is open to filter the list. `onRender` is called for each rendered item and lets you decorate rows (add icons, badges, etc.) without breaking the built-in filter or virtualization.
+
+```html
+<select id="my-select">
+  <option value="">Choose one…</option>
+  <option value="a">Option A</option>
+  <option value="b">Option B</option>
+</select>
+
+<script>
+  const sm = new DevblocksUI.SelectMenu(document.getElementById('my-select'), {
+    placeholder: 'Choose one…',
+    onSelect: (value, text) => console.log(value, text),
+  });
+</script>
+```
+
+## Accordion — options
+
+```ts
+interface AccordionOptions {
+  active?:      number;   // initially-open section index (default 0); pass -1 for all collapsed
+  collapsible?: boolean;  // clicking the open section collapses it (default false)
+  scrollable?:  boolean;  // cap panel height and scroll (default false)
+  onExpand?:    (index: number, info: AccordionItemInfo) => void;
+  onCollapse?:  (index: number, info: AccordionItemInfo) => void;
+}
+
+interface AccordionItemInfo {
+  index:  number;
+  header: HTMLHeadingElement;
+  panel:  HTMLDivElement;
+}
+```
+
+Public methods: `expand(index)`, `collapse(index)`, `get expanded` (current open index, `-1` if none), `destroy()`.
+
+Pass a `<div>` whose direct children alternate between `<h3>` headers and `<div>` panels. Each `<h3>` becomes a clickable trigger; its following `<div>` expands and collapses with a CSS grid-row animation. Arrow keys navigate between headers; Space/Enter toggles the focused section. When `scrollable` is `true`, panel height is capped by the `--dui-accordion-max-height` token (default `300px`).
+
+```html
+<div id="my-accordion">
+  <h3>Section 1</h3>
+  <div><p>Content for section 1.</p></div>
+  <h3>Section 2</h3>
+  <div><p>Content for section 2.</p></div>
+</div>
+
+<script>
+  const acc = new DevblocksUI.Accordion(document.getElementById('my-accordion'), {
+    active:      0,
+    collapsible: true,
+    onExpand: (index) => console.log('opened', index),
   });
 </script>
 ```

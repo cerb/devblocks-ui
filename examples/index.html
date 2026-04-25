@@ -22,6 +22,7 @@
   </header>
 
   <nav class="component-index" aria-label="Components">
+    <a href="#accordion">Accordion</a>
     <a href="#menu">Menu</a>
     <a href="#tabs">Tabs</a>
     <a href="#spinner">Spinner</a>
@@ -557,6 +558,75 @@
         <div class="code-blocks">
           <pre><code class="language-html" id="code-sm-status-html"></code></pre>
           <pre><code class="language-javascript" id="code-sm-status-js"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="component-category" id="accordion">Accordion</h2>
+
+    <!-- ───── Accordion — basic ─────────────────────────────────────────── -->
+    <section class="component">
+      <h3>Basic accordion</h3>
+      <p class="component-desc">
+        Enhances a <code>&lt;div&gt;</code> with alternating <code>&lt;h3&gt;</code> /
+        <code>&lt;div&gt;</code> children into an accordion. Clicking a header expands
+        its panel and collapses the previously open one. Arrow keys move focus between
+        headers; Enter/Space toggles via the native button.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <div id="accordion-basic">
+            <h3>Getting started</h3>
+            <div>
+              <p>Install via npm or drop the dist script tag into your page. No runtime dependencies.</p>
+            </div>
+            <h3>Keyboard navigation</h3>
+            <div>
+              <p>ArrowDown / ArrowUp move focus between headers. Home / End jump to the first or last.
+                 Enter and Space toggle the focused section (native button behaviour).</p>
+            </div>
+            <h3>Dark mode</h3>
+            <div>
+              <p>Set <code>data-dui-theme="dark"</code> on any ancestor to switch the palette.
+                 All colours are CSS custom properties.</p>
+            </div>
+          </div>
+          <output id="accordion-basic-result" class="demo-output" style="margin-top:12px">No section expanded yet.</output>
+        </div>
+
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-accordion-basic-html"></code></pre>
+          <pre><code class="language-javascript" id="code-accordion-basic"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── Accordion — collapsible ──────────────────────────────────── -->
+    <section class="component">
+      <h3>Collapsible</h3>
+      <p class="component-desc">
+        With <code>collapsible: true</code>, clicking the expanded header collapses it so
+        all sections can be closed simultaneously. Also shows <code>active: -1</code> to
+        start with every section closed.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <div id="accordion-collapsible">
+            <h3>Alpha</h3>
+            <div><p>Content for the Alpha section. Click the header again to collapse it.</p></div>
+            <h3>Beta</h3>
+            <div><p>Content for the Beta section.</p></div>
+            <h3>Gamma</h3>
+            <div><p>Content for the Gamma section.</p></div>
+          </div>
+          <output id="accordion-collapsible-result" class="demo-output" style="margin-top:12px">No section expanded yet.</output>
+        </div>
+
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-accordion-collapsible-html"></code></pre>
+          <pre><code class="language-javascript" id="code-accordion-collapsible"></code></pre>
         </div>
       </div>
     </section>

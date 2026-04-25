@@ -38,3 +38,6 @@ export type { DatePickerOptions } from './datepicker/types';
 export { SelectMenu } from './selectmenu/selectmenu';
 export type { SelectMenuOptions } from './selectmenu/types';
 
+export { Accordion } from './accordion/accordion';
+export type { AccordionOptions, AccordionItemInfo } from './accordion/types';
+

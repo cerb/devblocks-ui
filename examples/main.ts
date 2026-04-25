@@ -1,4 +1,4 @@
-import { Menu, Toggle, Tabs, Spinner, Dialog, Tooltip, DatePicker, SelectMenu } from 'devblocks-ui';
+import { Menu, Toggle, Tabs, Spinner, Dialog, Tooltip, DatePicker, SelectMenu, Accordion } from 'devblocks-ui';
 import 'devblocks-ui/styles';
 
 declare const Prism: { highlightAllUnder: (root: ParentNode) => void } | undefined;
@@ -839,6 +839,95 @@ const sm = new SelectMenu(document.getElementById('status'), {
   onSelect: (value, text, option) => {
     console.log('status:', value, text, option);
   },
+});
+`.trim();
+
+// ── Demo: accordion — basic ───────────────────────────────────────────
+
+{
+  const result = document.getElementById('accordion-basic-result') as HTMLElement;
+
+  const accordionBasic = new Accordion(
+    document.getElementById('accordion-basic') as HTMLElement,
+    {
+      active: 0,
+      onExpand: (index, info) => {
+        const label = info.header.querySelector('button')?.childNodes[0]?.textContent?.trim() ?? '';
+        result.textContent = `Expanded section ${index}: ${label}`;
+      },
+      onCollapse: (_index, _info) => {
+        result.textContent = 'All sections collapsed.';
+      },
+    },
+  );
+
+  (window as unknown as Record<string, unknown>)['accordionBasic'] = accordionBasic;
+}
+
+(document.getElementById('code-accordion-basic-html') as HTMLElement).textContent = `
+<div id="my-accordion">
+  <h3>Getting started</h3>
+  <div><p>Panel content goes here.</p></div>
+  <h3>Keyboard navigation</h3>
+  <div><p>ArrowDown/Up move focus; Enter/Space toggle.</p></div>
+  <h3>Dark mode</h3>
+  <div><p>Set data-dui-theme="dark" on any ancestor.</p></div>
+</div>
+`.trim();
+
+(document.getElementById('code-accordion-basic') as HTMLElement).textContent = `
+import { Accordion } from 'devblocks-ui';
+
+const accordion = new Accordion(document.getElementById('my-accordion'), {
+  active: 0,                          // index of initially open section (default 0)
+  onExpand:  (index, info) => console.log('expanded', index),
+  onCollapse: (index, info) => console.log('collapsed', index),
+});
+
+accordion.expand(1);         // open section 1
+accordion.collapse(0);       // close section 0
+console.log(accordion.expanded); // currently open index (-1 if none)
+accordion.destroy();         // restore original DOM
+`.trim();
+
+// ── Demo: accordion — collapsible ─────────────────────────────────────
+
+{
+  const result = document.getElementById('accordion-collapsible-result') as HTMLElement;
+
+  const accordionCollapsible = new Accordion(
+    document.getElementById('accordion-collapsible') as HTMLElement,
+    {
+      active: -1,
+      collapsible: true,
+      onExpand: (_index, info) => {
+        const label = info.header.querySelector('button')?.childNodes[0]?.textContent?.trim() ?? '';
+        result.textContent = `Expanded: ${label}`;
+      },
+      onCollapse: (_index, _info) => {
+        result.textContent = 'All sections collapsed.';
+      },
+    },
+  );
+
+  (window as unknown as Record<string, unknown>)['accordionCollapsible'] = accordionCollapsible;
+}
+
+(document.getElementById('code-accordion-collapsible-html') as HTMLElement).textContent = `
+<div id="my-accordion">
+  <h3>Alpha</h3><div><p>Alpha content.</p></div>
+  <h3>Beta</h3><div><p>Beta content.</p></div>
+  <h3>Gamma</h3><div><p>Gamma content.</p></div>
+</div>
+`.trim();
+
+(document.getElementById('code-accordion-collapsible') as HTMLElement).textContent = `
+import { Accordion } from 'devblocks-ui';
+
+const accordion = new Accordion(document.getElementById('my-accordion'), {
+  active: -1,         // start with all sections closed
+  collapsible: true,  // clicking the open section collapses it
+  scrollable: false,  // true adds max-height + overflow-y: auto to panels
 });
 `.trim();
 

@@ -1,0 +1,79 @@
+// Devblocks UI — Accordion
+
+.dui-accordion {
+  border: 1px solid var(--dui-border);
+  border-radius: var(--dui-radius);
+  overflow: hidden;
+  font-size: var(--dui-font-size);
+  color: var(--dui-fg);
+}
+
+.dui-accordion-header {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+// Border between sections only when the panel above is open.
+.dui-accordion-panel-wrap.dui-accordion-expanded + .dui-accordion-header {
+  border-top: 1px solid var(--dui-border);
+}
+
+.dui-accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: var(--dui-item-pad) 14px;
+  font-size: var(--dui-font-size);
+  font-weight: 600;
+  color: var(--dui-fg);
+  background: var(--dui-bg);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  user-select: none;
+
+  &:hover {
+    background: var(--dui-accordion-hover-bg);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--dui-accent-bg);
+    outline-offset: -2px;
+  }
+}
+
+.dui-accordion-icon {
+  flex-shrink: 0;
+  opacity: var(--dui-arrow-op);
+  transition: transform 0.2s ease;
+}
+
+.dui-accordion-trigger[aria-expanded="true"] .dui-accordion-icon {
+  transform: rotate(-180deg);
+}
+
+.dui-accordion-panel-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s ease;
+
+  &.dui-accordion-expanded {
+    grid-template-rows: 1fr;
+  }
+}
+
+.dui-accordion-panel-inner {
+  overflow: hidden;
+}
+
+.dui-accordion-panel-body {
+  padding: 0 14px var(--dui-item-pad);
+}
+
+.dui-accordion--scrollable .dui-accordion-panel-body {
+  overflow-y: auto;
+  max-height: var(--dui-accordion-max-height);
+}

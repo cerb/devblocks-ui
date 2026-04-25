@@ -44,6 +44,10 @@
   // SelectMenu
   --dui-selectmenu-placeholder-fg: #9ca3af;
   --dui-selectmenu-filter-bg:      rgba(0, 0, 0, 0.03);
+
+  // Accordion
+  --dui-accordion-hover-bg:  rgba(0, 0, 0, 0.03);
+  --dui-accordion-max-height: 300px;
 }
 
 [data-dui-theme="dark"] {
@@ -70,4 +74,7 @@
   // SelectMenu
   --dui-selectmenu-placeholder-fg: #6b7280;
   --dui-selectmenu-filter-bg:      rgba(255, 255, 255, 0.04);
+
+  // Accordion
+  --dui-accordion-hover-bg: rgba(255, 255, 255, 0.05);
 }
