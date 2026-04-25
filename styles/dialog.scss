@@ -1,0 +1,113 @@
+.dui-dialog {
+  position: fixed;
+  z-index: var(--dui-z-dialog);
+  display: flex;
+  flex-direction: column;
+  background: var(--dui-bg);
+  color: var(--dui-fg);
+  border: 1px solid var(--dui-border);
+  border-radius: var(--dui-radius);
+  box-shadow: var(--dui-shadow);
+  font-size: var(--dui-font-size);
+  min-width: 200px;
+  box-sizing: border-box;
+}
+
+.dui-dialog-hidden {
+  display: none;
+}
+
+// ── Titlebar ─────────────────────────────────────────────────────────────
+
+.dui-dialog-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--dui-dialog-titlebar-bg);
+  color: var(--dui-dialog-titlebar-fg);
+  border-radius: calc(var(--dui-radius) - 1px) calc(var(--dui-radius) - 1px) 0 0;
+  user-select: none;
+  cursor: default;
+  flex-shrink: 0;
+}
+
+.dui-dialog-draggable .dui-dialog-titlebar {
+  cursor: move;
+}
+
+.dui-dialog-title {
+  flex: 1;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dui-dialog-controls {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.dui-dialog-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--dui-dialog-titlebar-fg);
+  opacity: 0.75;
+  padding: 3px;
+  border-radius: 3px;
+  line-height: 0;
+  transition: opacity 0.1s, background 0.1s;
+
+  &:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--dui-dialog-titlebar-fg);
+    outline-offset: 1px;
+  }
+}
+
+// ── Content ───────────────────────────────────────────────────────────────
+
+.dui-dialog-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--dui-item-pad);
+}
+
+// ── Minimized state ───────────────────────────────────────────────────────
+
+.dui-dialog-minimized {
+  .dui-dialog-titlebar {
+    border-radius: calc(var(--dui-radius) - 1px);
+  }
+
+  .dui-dialog-content,
+  .dui-dialog-resize {
+    display: none;
+  }
+}
+
+// ── Resize handles ────────────────────────────────────────────────────────
+
+.dui-dialog-resize {
+  position: absolute;
+
+  &[data-dir="n"]  { top: -4px;    left: 8px;   right: 8px;  height: 8px;  cursor: n-resize; }
+  &[data-dir="s"]  { bottom: -4px; left: 8px;   right: 8px;  height: 8px;  cursor: s-resize; }
+  &[data-dir="e"]  { right: -4px;  top: 8px;    bottom: 8px; width: 8px;   cursor: e-resize; }
+  &[data-dir="w"]  { left: -4px;   top: 8px;    bottom: 8px; width: 8px;   cursor: w-resize; }
+  &[data-dir="ne"] { top: -4px;    right: -4px; width: 12px; height: 12px; cursor: ne-resize; }
+  &[data-dir="nw"] { top: -4px;    left: -4px;  width: 12px; height: 12px; cursor: nw-resize; }
+  &[data-dir="se"] { bottom: -4px; right: -4px; width: 12px; height: 12px; cursor: se-resize; }
+  &[data-dir="sw"] { bottom: -4px; left: -4px;  width: 12px; height: 12px; cursor: sw-resize; }
+}

@@ -17,6 +17,11 @@
   --dui-font-size: 13px;
   --dui-item-pad:  10px;
   --dui-z-menu:    9999;
+  --dui-z-dialog:  10000;
+
+  // Dialog
+  --dui-dialog-titlebar-bg: var(--dui-accent-bg);
+  --dui-dialog-titlebar-fg: var(--dui-accent-fg);
 
   // Toggle
   --dui-toggle-off:  #9ca3af;

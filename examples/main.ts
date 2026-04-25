@@ -1,4 +1,4 @@
-import { Menu, Toggle, Tabs, Spinner } from 'devblocks-ui';
+import { Menu, Toggle, Tabs, Spinner, Dialog } from 'devblocks-ui';
 import 'devblocks-ui/styles';
 
 declare const Prism: { highlightAllUnder: (root: ParentNode) => void } | undefined;
@@ -433,6 +433,123 @@ t.checked = true;
 
 // jQuery plugin (optional):
 // $('input[type=checkbox]').duiToggle({ onChange: fn });
+`.trim();
+
+// ── Demo: dialog — basic ──────────────────────────────────────────────
+
+{
+  const openBtn = document.getElementById('dialog-basic-open') as HTMLButtonElement;
+  const result  = document.getElementById('dialog-basic-result') as HTMLElement;
+  const content = document.getElementById('dialog-basic-content') as HTMLElement;
+
+  const dlg = new Dialog(content, {
+    title: 'Example Dialog',
+    onOpen:  () => { result.textContent = 'Dialog is open.'; },
+    onClose: () => { result.textContent = 'Dialog is closed.'; },
+  });
+
+  openBtn.addEventListener('click', () => {
+    if (dlg.isOpen()) dlg.close();
+    else dlg.open();
+  });
+
+  (window as unknown as Record<string, unknown>)['dialogBasic'] = dlg;
+}
+
+(document.getElementById('code-dialog-basic-html') as HTMLElement).textContent = `
+<button id="open-btn" type="button">Open dialog</button>
+
+<div id="my-content">
+  <p>This is the dialog content area.</p>
+</div>
+`.trim();
+
+(document.getElementById('code-dialog-basic') as HTMLElement).textContent = `
+import { Dialog } from 'devblocks-ui';
+
+const dlg = new Dialog(document.getElementById('my-content'), {
+  title: 'Example Dialog',
+  draggable: true,   // default
+  resizable: true,   // default
+  closable:  true,   // default
+  width:     400,    // default
+  onOpen:  () => console.log('opened'),
+  onClose: () => console.log('closed'),
+});
+
+document.getElementById('open-btn').addEventListener('click', () => {
+  dlg.isOpen() ? dlg.close() : dlg.open();
+});
+
+// Additional API:
+dlg.setTitle('New Title');  // update titlebar text
+dlg.destroy();              // remove from DOM, restore content element
+`.trim();
+
+// ── Demo: dialog — multiple + closable:false ──────────────────────────
+
+{
+  const openA   = document.getElementById('dialog-a-open')   as HTMLButtonElement;
+  const openB   = document.getElementById('dialog-b-open')   as HTMLButtonElement;
+  const closeB  = document.getElementById('dialog-b-close')  as HTMLButtonElement;
+  const result  = document.getElementById('dialog-multi-result') as HTMLElement;
+
+  const contentA = document.getElementById('dialog-a-content') as HTMLElement;
+  const contentB = document.getElementById('dialog-b-content') as HTMLElement;
+
+  const dlgA = new Dialog(contentA, {
+    title: 'Dialog A',
+    width: 360,
+    onOpen:  () => updateResult(),
+    onClose: () => updateResult(),
+  });
+
+  const dlgB = new Dialog(contentB, {
+    title:    'Dialog B',
+    closable: false,
+    width:    340,
+    onOpen:   () => updateResult(),
+    onClose:  () => updateResult(),
+  });
+
+  function updateResult(): void {
+    const a = dlgA.isOpen();
+    const b = dlgB.isOpen();
+    if (!a && !b) result.textContent = 'Both dialogs closed.';
+    else result.textContent = [a && 'A', b && 'B'].filter(Boolean).join(' and ') + ' open.';
+  }
+
+  openA.addEventListener('click', () => { dlgA.isOpen() ? dlgA.close() : dlgA.open(); });
+  openB.addEventListener('click', () => { dlgB.isOpen() ? dlgB.close() : dlgB.open(); });
+  closeB.addEventListener('click', () => dlgB.close());
+}
+
+(document.getElementById('code-dialog-multi-html') as HTMLElement).textContent = `
+<div id="content-a"><p>Dialog A content.</p></div>
+<div id="content-b"><p>Dialog B content.</p></div>
+`.trim();
+
+(document.getElementById('code-dialog-multi') as HTMLElement).textContent = `
+import { Dialog } from 'devblocks-ui';
+
+const dlgA = new Dialog(document.getElementById('content-a'), {
+  title: 'Dialog A',
+});
+
+const dlgB = new Dialog(document.getElementById('content-b'), {
+  title:    'Dialog B',
+  closable: false,  // no close button — dismiss programmatically
+});
+
+dlgA.open();
+dlgB.open();
+
+// Clicking either dialog brings it to the front automatically.
+// Close Dialog B via API:
+dlgB.close();
+
+// jQuery plugin (optional):
+// $('#my-content').duiDialog({ title: 'My Dialog', trigger: '#open-btn' });
 `.trim();
 
 // ── Highlight all code blocks once they're populated ──────────────────

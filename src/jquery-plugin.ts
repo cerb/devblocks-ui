@@ -4,9 +4,16 @@ import { Toggle } from './toggle/toggle';
 import type { ToggleOptions } from './toggle/types';
 import { Tabs } from './tabs/tabs';
 import type { TabsOptions } from './tabs/types';
+import { Dialog } from './dialog/dialog';
+import type { DialogOptions } from './dialog/types';
 
-interface PluginOptions extends MenuOptions {
+interface MenuPluginOptions extends MenuOptions {
   /** Trigger element (CSS selector or DOM element) that toggles the menu. */
+  trigger?: string | Element;
+}
+
+interface DialogPluginOptions extends DialogOptions {
+  /** Trigger element (CSS selector or DOM element) that toggles the dialog. */
   trigger?: string | Element;
 }
 
@@ -33,7 +40,7 @@ export function registerJQueryPlugin(): void {
   if (!$) return;
 
   if (!$.fn['duiMenu']) {
-    $.fn['duiMenu'] = function (this: JQuery, opts: PluginOptions = {}): JQuery {
+    $.fn['duiMenu'] = function (this: JQuery, opts: MenuPluginOptions = {}): JQuery {
       return this.each(function (this: HTMLElement) {
         const ul = this as HTMLUListElement;
         const menu = new Menu(ul, opts);
@@ -68,6 +75,24 @@ export function registerJQueryPlugin(): void {
         const ul = this as HTMLUListElement;
         const tabs = new Tabs(ul, opts);
         $(ul).data('duiTabs', tabs);
+      });
+    };
+  }
+
+  if (!$.fn['duiDialog']) {
+    $.fn['duiDialog'] = function (this: JQuery, opts: DialogPluginOptions = {}): JQuery {
+      return this.each(function (this: HTMLElement) {
+        const d = new Dialog(this, opts);
+        $(this).data('duiDialog', d);
+
+        if (opts.trigger) {
+          const $trig = $(opts.trigger);
+          $trig.data('duiDialog', d);
+          $trig.on('click', function () {
+            if (d.isOpen()) d.close();
+            else d.open();
+          });
+        }
       });
     };
   }

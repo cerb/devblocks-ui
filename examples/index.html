@@ -26,6 +26,7 @@
     <a href="#tabs">Tabs</a>
     <a href="#spinner">Spinner</a>
     <a href="#toggle">Toggle</a>
+    <a href="#dialog">Dialog</a>
   </nav>
 
   <main>
@@ -322,6 +323,75 @@
         <div class="code-blocks">
           <pre><code class="language-html" id="code-toggle-html"></code></pre>
           <pre><code class="language-javascript" id="code-toggle"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="component-category" id="dialog">Dialog</h2>
+
+    <!-- ───── Dialog — basic ──────────────────────────────────────────── -->
+    <section class="component">
+      <h3>Basic dialog</h3>
+      <p class="component-desc">
+        A floating window that wraps any existing element as its content area.
+        Drag by the titlebar to reposition; grab any edge or corner to resize.
+        The minimize button collapses the content and keeps the titlebar visible;
+        click it again to restore. Escape closes the topmost open dialog.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <button id="dialog-basic-open" type="button" class="demo-trigger">
+            Open dialog
+          </button>
+          <output id="dialog-basic-result" class="demo-output">Dialog is closed.</output>
+
+          <div id="dialog-basic-content">
+            <p>This is the dialog content area. It can contain any HTML.</p>
+            <p>Try dragging the titlebar, resizing from the edges, minimizing,
+               or pressing Escape to close.</p>
+          </div>
+        </div>
+
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-dialog-basic-html"></code></pre>
+          <pre><code class="language-javascript" id="code-dialog-basic"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── Dialog — multiple + closable:false ────────────────────────── -->
+    <section class="component">
+      <h3>Multiple dialogs</h3>
+      <p class="component-desc">
+        Any number of dialogs can be open at once. Clicking a dialog brings it
+        to the front (highest z-index). The second dialog here is created with
+        <code>closable: false</code> — its close button is omitted entirely;
+        dismiss it via the API button below.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button id="dialog-a-open" type="button" class="demo-trigger">Open Dialog A</button>
+            <button id="dialog-b-open" type="button" class="demo-trigger">Open Dialog B</button>
+            <button id="dialog-b-close" type="button" class="demo-trigger">Close B (API)</button>
+          </div>
+          <output id="dialog-multi-result" class="demo-output">Both dialogs closed.</output>
+
+          <div id="dialog-a-content">
+            <p>Dialog A — try clicking Dialog B and then back here.</p>
+            <p>The clicked dialog always comes to the front.</p>
+          </div>
+          <div id="dialog-b-content">
+            <p>Dialog B — no close button (<code>closable: false</code>).</p>
+            <p>Use the "Close B (API)" button or call <code>dialog.close()</code>.</p>
+          </div>
+        </div>
+
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-dialog-multi-html"></code></pre>
+          <pre><code class="language-javascript" id="code-dialog-multi"></code></pre>
         </div>
       </div>
     </section>
