@@ -1,12 +1,17 @@
-import type { TooltipOptions } from './types';
+import type { TargetInput, TooltipOptions } from './types';
 
 const GAP = 8;
 
 interface ResolvedOpts {
-  target: string;
+  target?: string | HTMLElement;
   maxWidth: number;
   onOpen?: () => void;
   onClose?: () => void;
+}
+
+function normalizeTarget(t: TargetInput): string | HTMLElement {
+  if (typeof t === 'string' || t instanceof HTMLElement) return t;
+  return t.get(0);
 }
 
 export class Tooltip {
@@ -15,9 +20,14 @@ export class Tooltip {
   private panel: HTMLDivElement | null = null;
   private docDown: ((e: PointerEvent) => void) | null = null;
 
-  constructor(src: HTMLElement, opts: TooltipOptions) {
+  constructor(src: HTMLElement, opts: TooltipOptions = {}) {
     this.src = src;
-    this.opts = { maxWidth: 280, ...opts };
+    const { target, ...rest } = opts;
+    this.opts = { maxWidth: 280, ...rest, ...(target != null ? { target: normalizeTarget(target) } : {}) };
+  }
+
+  setTarget(target: TargetInput): void {
+    this.opts.target = normalizeTarget(target);
   }
 
   isOpen(): boolean {
@@ -27,7 +37,9 @@ export class Tooltip {
   open(): void {
     if (this.panel) return;
 
-    const targetEl = document.querySelector<HTMLElement>(this.opts.target);
+    const targetEl = typeof this.opts.target === 'string'
+      ? document.querySelector<HTMLElement>(this.opts.target)
+      : this.opts.target;
     if (!targetEl) return;
 
     const panel = document.createElement('div');
