@@ -60,7 +60,10 @@
           </ul>
         </div>
 
-        <pre><code class="language-javascript" id="code-menu-small"></code></pre>
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-menu-small-html"></code></pre>
+          <pre><code class="language-javascript" id="code-menu-small"></code></pre>
+        </div>
       </div>
     </section>
 
@@ -82,7 +85,10 @@
           <ul id="menu-large" hidden></ul>
         </div>
 
-        <pre><code class="language-javascript" id="code-menu-large"></code></pre>
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-menu-large-html"></code></pre>
+          <pre><code class="language-javascript" id="code-menu-large"></code></pre>
+        </div>
       </div>
     </section>
 
@@ -138,7 +144,96 @@
           </ul>
         </div>
 
-        <pre><code class="language-javascript" id="code-menu-deep"></code></pre>
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-menu-deep-html"></code></pre>
+          <pre><code class="language-javascript" id="code-menu-deep"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="component-category">Tabs</h2>
+
+    <!-- ───── Tabs — anchor (static panels) ────────────────────────── -->
+    <section class="component">
+      <h3>Anchor panels</h3>
+      <p class="component-desc">
+        Tabs built from a <code>&lt;ul&gt;</code>/<code>&lt;li&gt;</code> list.
+        Each <code>&lt;a href="#id"&gt;</code> targets a sibling content div that
+        is toggled visible on selection. Arrow keys navigate; Space/Enter activate.
+      </p>
+      <div class="demo-grid">
+        <div class="demo">
+          <ul id="tabs-static">
+            <li><a href="#tab-s1">Overview</a></li>
+            <li><a href="#tab-s2">Details</a></li>
+            <li><a href="#tab-s3">Settings</a></li>
+          </ul>
+          <div id="tab-s1"><p>Overview: static panel content.</p></div>
+          <div id="tab-s2"><p>Details: static panel content.</p></div>
+          <div id="tab-s3"><p>Settings: static panel content.</p></div>
+          <output id="tabs-static-result" class="demo-output" style="margin-top:12px">No tab selected yet.</output>
+        </div>
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-tabs-static-html"></code></pre>
+          <pre><code class="language-javascript" id="code-tabs-static"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── Tabs — dynamic (Ajax panels) ─────────────────────────── -->
+    <section class="component">
+      <h3>Dynamic (Ajax) panels</h3>
+      <p class="component-desc">
+        Tabs whose <code>&lt;a href="/path"&gt;</code> loads content via
+        <code>fetch()</code> on first click. A spinner shows while loading;
+        content is cached after the first load. Call <code>tabs.refresh(index)</code>
+        to force a reload. The component auto-manages the panel
+        <code>&lt;div&gt;</code> — you don't define it.
+      </p>
+      <div class="demo-grid">
+        <div class="demo">
+          <ul id="tabs-dynamic">
+            <li><a href="#tab-d1">Summary</a></li>
+            <li><a href="/ajax/tab-a.html">Details (Ajax)</a></li>
+            <li><a href="/ajax/tab-b.html">History (Ajax)</a></li>
+          </ul>
+          <div id="tab-d1"><p>Summary: static content; the other two tabs load dynamically.</p></div>
+          <output id="tabs-dynamic-result" class="demo-output" style="margin-top:12px">No tab selected yet.</output>
+        </div>
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-tabs-dynamic-html"></code></pre>
+          <pre><code class="language-javascript" id="code-tabs-dynamic"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="component-category">Spinner</h2>
+
+    <!-- ───── Spinner ───────────────────────────────────────────────── -->
+    <section class="component">
+      <h3>Loading indicator</h3>
+      <p class="component-desc">
+        CSS-animated spinner used internally by Tabs while dynamic panels load.
+        Can also be used standalone — <code>new Spinner()</code> returns an object
+        with an <code>.el</code> span you insert wherever you need it.
+        Call <code>spinner.destroy()</code> to remove it.
+      </p>
+      <div class="demo-grid">
+        <div class="demo">
+          <div class="spinner-demo">
+            <span id="spinner-host"></span>
+            <span class="spinner-label" id="spinner-status">Loading…</span>
+          </div>
+          <output id="spinner-result" class="demo-output">Spinner is running.</output>
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <button id="spinner-start" type="button" class="demo-trigger">Start</button>
+            <button id="spinner-stop"  type="button" class="demo-trigger">Stop</button>
+          </div>
+        </div>
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-spinner-html"></code></pre>
+          <pre><code class="language-javascript" id="code-spinner"></code></pre>
+        </div>
       </div>
     </section>
 
@@ -172,7 +267,10 @@
           <output id="toggle-result" class="demo-output">No change yet.</output>
         </div>
 
-        <pre><code class="language-javascript" id="code-toggle"></code></pre>
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-toggle-html"></code></pre>
+          <pre><code class="language-javascript" id="code-toggle"></code></pre>
+        </div>
       </div>
     </section>
 
@@ -188,6 +286,7 @@
   <!-- Prism core + JS language (CDN, demo page only) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
 
 </body>
 </html>

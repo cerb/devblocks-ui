@@ -162,3 +162,24 @@ pre code {
   user-select: none;
   margin-bottom: 10px;
 }
+
+/* Two stacked code blocks (HTML above JS) in the right demo-grid column */
+.code-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* Spinner standalone demo */
+.spinner-demo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.spinner-label {
+  font-size: 13px;
+  opacity: 0.6;
+}
