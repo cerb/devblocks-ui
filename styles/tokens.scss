@@ -40,6 +40,10 @@
   --dui-datepicker-weekday-fg: #6b7280;
   --dui-datepicker-other-fg:   #9ca3af;
   --dui-datepicker-hover-bg:   rgba(0, 0, 0, 0.06);
+
+  // SelectMenu
+  --dui-selectmenu-placeholder-fg: #9ca3af;
+  --dui-selectmenu-filter-bg:      rgba(0, 0, 0, 0.03);
 }
 
 [data-dui-theme="dark"] {
@@ -62,4 +66,8 @@
   --dui-datepicker-weekday-fg: #9ca3af;
   --dui-datepicker-other-fg:   #4b5563;
   --dui-datepicker-hover-bg:   rgba(255, 255, 255, 0.08);
+
+  // SelectMenu
+  --dui-selectmenu-placeholder-fg: #6b7280;
+  --dui-selectmenu-filter-bg:      rgba(255, 255, 255, 0.04);
 }

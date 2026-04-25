@@ -1,4 +1,4 @@
-import { Menu, Toggle, Tabs, Spinner, Dialog, Tooltip, DatePicker } from 'devblocks-ui';
+import { Menu, Toggle, Tabs, Spinner, Dialog, Tooltip, DatePicker, SelectMenu } from 'devblocks-ui';
 import 'devblocks-ui/styles';
 
 declare const Prism: { highlightAllUnder: (root: ParentNode) => void } | undefined;
@@ -646,6 +646,200 @@ dp.getDate();                // → Date | null
 dp.open();                   // open popup
 dp.close();                  // close popup
 dp.destroy();                // remove popup, detach listeners
+`.trim();
+
+// ── Demo: selectmenu — basic ──────────────────────────────────────────
+
+{
+  const select = document.getElementById('sm-basic') as HTMLSelectElement;
+  const result = document.getElementById('sm-basic-result') as HTMLElement;
+  const setBtn = document.getElementById('sm-basic-set') as HTMLButtonElement;
+
+  const sm = new SelectMenu(select, {
+    onSelect: (value, text) => {
+      result.textContent = `Selected: ${text} (value="${value}")`;
+    },
+  });
+
+  setBtn.addEventListener('click', () => {
+    sm.setValue('grape');
+    result.textContent = 'Set to "Grape" via API.';
+  });
+
+  (window as unknown as Record<string, unknown>)['smBasic'] = sm;
+}
+
+(document.getElementById('code-sm-basic-html') as HTMLElement).textContent = `
+<label for="fruit">Favourite fruit</label>
+<select id="fruit" name="fruit">
+  <option value="apple">Apple</option>
+  <option value="banana">Banana</option>
+  <option value="cherry">Cherry</option>
+  <option value="durian" disabled>Durian (disabled)</option>
+</select>
+`.trim();
+
+(document.getElementById('code-sm-basic-js') as HTMLElement).textContent = `
+import { SelectMenu } from 'devblocks-ui';
+
+const sm = new SelectMenu(document.getElementById('fruit'), {
+  onSelect: (value, text, option) => {
+    console.log(value, text);  // e.g. "apple", "Apple"
+  },
+});
+
+sm.getValue();       // current <select> value
+sm.setValue('banana'); // set programmatically
+sm.open();           // open panel
+sm.close();          // close panel
+sm.destroy();        // restore <select>, remove trigger
+`.trim();
+
+// ── Demo: selectmenu — large timezone list with type-to-filter ────────
+
+{
+  const tzSelect = document.getElementById('sm-tz') as HTMLSelectElement;
+  const result   = document.getElementById('sm-tz-result') as HTMLElement;
+
+  // Populate with all IANA timezones (or a fallback list)
+  const tzones: string[] = (() => {
+    try {
+      return (Intl as { supportedValuesOf?(k: string): string[] }).supportedValuesOf?.('timeZone') ?? [];
+    } catch {
+      return [];
+    }
+  })();
+  if (tzones.length === 0) {
+    tzones.push(
+      'Africa/Abidjan', 'America/Adak', 'America/Anchorage', 'America/Bogota',
+      'America/Chicago', 'America/Denver', 'America/Detroit', 'America/Halifax',
+      'America/Los_Angeles', 'America/Mexico_City', 'America/New_York',
+      'America/Phoenix', 'America/Santiago', 'America/Sao_Paulo',
+      'America/Toronto', 'America/Vancouver', 'Asia/Bangkok', 'Asia/Dubai',
+      'Asia/Hong_Kong', 'Asia/Jakarta', 'Asia/Karachi', 'Asia/Kolkata',
+      'Asia/Kuala_Lumpur', 'Asia/Manila', 'Asia/Seoul', 'Asia/Shanghai',
+      'Asia/Singapore', 'Asia/Taipei', 'Asia/Tehran', 'Asia/Tokyo',
+      'Australia/Adelaide', 'Australia/Brisbane', 'Australia/Melbourne',
+      'Australia/Perth', 'Australia/Sydney', 'Europe/Amsterdam',
+      'Europe/Athens', 'Europe/Berlin', 'Europe/Brussels', 'Europe/Budapest',
+      'Europe/Copenhagen', 'Europe/Dublin', 'Europe/Helsinki', 'Europe/Istanbul',
+      'Europe/Lisbon', 'Europe/London', 'Europe/Madrid', 'Europe/Moscow',
+      'Europe/Oslo', 'Europe/Paris', 'Europe/Prague', 'Europe/Rome',
+      'Europe/Sofia', 'Europe/Stockholm', 'Europe/Vienna', 'Europe/Warsaw',
+      'Europe/Zurich', 'Pacific/Auckland', 'Pacific/Fiji', 'Pacific/Guam',
+      'Pacific/Honolulu', 'Pacific/Tahiti', 'UTC',
+    );
+  }
+
+  const frag = document.createDocumentFragment();
+  for (const tz of tzones) {
+    const opt = document.createElement('option');
+    opt.value = tz;
+    opt.textContent = tz;
+    frag.appendChild(opt);
+  }
+  tzSelect.appendChild(frag);
+  tzSelect.value = 'America/Los_Angeles';
+
+  const smTz = new SelectMenu(tzSelect, {
+    onSelect: (value) => {
+      result.textContent = `Selected: ${value}`;
+    },
+  });
+
+  (window as unknown as Record<string, unknown>)['smTz'] = smTz;
+}
+
+(document.getElementById('code-sm-tz-html') as HTMLElement).textContent = `
+<label for="tz">Time zone</label>
+<select id="tz" name="timezone"></select>
+`.trim();
+
+(document.getElementById('code-sm-tz-js') as HTMLElement).textContent = `
+import { SelectMenu } from 'devblocks-ui';
+
+// Populate the <select> however you like — SelectMenu reads it on open.
+const tzSelect = document.getElementById('tz');
+for (const tz of Intl.supportedValuesOf('timeZone')) {
+  const opt = document.createElement('option');
+  opt.value = opt.textContent = tz;
+  tzSelect.appendChild(opt);
+}
+
+const sm = new SelectMenu(tzSelect, {
+  // virtThreshold: 60  (default) — panels with more items are virtualized
+  onSelect: (value) => console.log('timezone:', value),
+});
+
+// Type-to-filter: open the menu and type characters to narrow the list.
+// The filter text is shown above the list; Backspace removes characters.
+// Selecting an item (or pressing Escape) always clears the filter.
+`.trim();
+
+// ── Demo: selectmenu — onRender (custom item markup) ─────────────────
+
+{
+  const STATUS_COLORS: Record<string, string> = {
+    active:   '#22c55e',
+    pending:  '#f59e0b',
+    archived: '#6b7280',
+    deleted:  '#ef4444',
+  };
+
+  const smStatus = new SelectMenu(
+    document.getElementById('sm-status') as HTMLSelectElement,
+    {
+      onRender: (li, option) => {
+        const dot = document.createElement('span');
+        // Inline style is safe here — it's library consumer code, not user data
+        dot.style.cssText =
+          'display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0;' +
+          `background:${STATUS_COLORS[option.value] ?? '#ccc'};margin-right:6px;`;
+        li.insertBefore(dot, li.firstChild);
+      },
+      onSelect: (_value, text) => {
+        (document.getElementById('sm-status-result') as HTMLElement).textContent =
+          `Status: ${text}`;
+      },
+    },
+  );
+
+  (window as unknown as Record<string, unknown>)['smStatus'] = smStatus;
+}
+
+(document.getElementById('code-sm-status-html') as HTMLElement).textContent = `
+<label for="status">Status</label>
+<select id="status" name="status">
+  <option value="active">Active</option>
+  <option value="pending">Pending</option>
+  <option value="archived">Archived</option>
+  <option value="deleted">Deleted</option>
+</select>
+`.trim();
+
+(document.getElementById('code-sm-status-js') as HTMLElement).textContent = `
+import { SelectMenu } from 'devblocks-ui';
+
+const STATUS_COLORS = {
+  active: '#22c55e', pending: '#f59e0b',
+  archived: '#6b7280', deleted: '#ef4444',
+};
+
+const sm = new SelectMenu(document.getElementById('status'), {
+  // onRender(li, option) — called after the default <span.label> is built,
+  // before the <li> is inserted into the DOM. Add icons, badges, etc.
+  onRender: (li, option) => {
+    const dot = document.createElement('span');
+    dot.style.cssText =
+      'display:inline-block;width:8px;height:8px;border-radius:50%;' +
+      'flex-shrink:0;margin-right:6px;background:' +
+      (STATUS_COLORS[option.value] ?? '#ccc');
+    li.insertBefore(dot, li.firstChild);
+  },
+  onSelect: (value, text, option) => {
+    console.log('status:', value, text, option);
+  },
+});
 `.trim();
 
 // ── Highlight all code blocks once they're populated ──────────────────

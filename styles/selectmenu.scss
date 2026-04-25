@@ -1,0 +1,177 @@
+// Devblocks UI — SelectMenu
+
+// Hide the source <select> without removing it from the DOM (it still
+// submits its value with the form). Do NOT use display:none — that
+// can prevent value submission in some browsers.
+.dui-selectmenu-source {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+// ── Trigger ──────────────────────────────────────────────────────────
+
+.dui-selectmenu {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 8px 0 10px;
+  min-width: 120px;
+  background: var(--dui-bg);
+  border: 1px solid var(--dui-border);
+  border-radius: var(--dui-radius);
+  color: var(--dui-fg);
+  font-size: var(--dui-font-size);
+  font-family: inherit;
+  cursor: default;
+  user-select: none;
+  box-sizing: border-box;
+  vertical-align: middle;
+
+  &:hover {
+    border-color: var(--dui-accent-bg);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--dui-accent-bg);
+    outline-offset: 1px;
+  }
+
+  &[aria-disabled="true"] {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+}
+
+.dui-selectmenu-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dui-selectmenu-text-placeholder {
+  color: var(--dui-selectmenu-placeholder-fg);
+}
+
+.dui-selectmenu-chevron {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  opacity: var(--dui-arrow-op);
+  transition: transform 0.15s ease;
+}
+
+.dui-selectmenu--open .dui-selectmenu-chevron {
+  transform: rotate(180deg);
+}
+
+// ── Panel ─────────────────────────────────────────────────────────────
+
+.dui-selectmenu-panel {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  background: var(--dui-bg);
+  border: 1px solid var(--dui-border);
+  border-radius: var(--dui-radius);
+  box-shadow: var(--dui-shadow);
+  z-index: var(--dui-z-menu);
+  overflow: hidden;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: var(--dui-font-size);
+  color: var(--dui-fg);
+  // min-width is set by JS to match the trigger; allow wider for long items
+  max-width: min(520px, calc(100vw - 16px));
+}
+
+// ── Filter row ────────────────────────────────────────────────────────
+
+.dui-selectmenu-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--dui-selectmenu-filter-bg);
+  border-bottom: 1px solid var(--dui-border);
+  font-size: var(--dui-font-size);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.dui-selectmenu-filter-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  opacity: var(--dui-arrow-op);
+}
+
+.dui-selectmenu-filter-query {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+// ── List ──────────────────────────────────────────────────────────────
+
+.dui-selectmenu-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  // height / max-height are set by JS in rebuildList(); no flex here since
+  // flex-basis: 0 would collapse the JS-set height in virt mode.
+}
+
+.dui-selectmenu-list-virt {
+  overflow-y: scroll; // keeps scrollbar gutter stable during virtual renders
+  padding: 0;         // height is set by JS; padding would offset item math
+}
+
+// ── Items ─────────────────────────────────────────────────────────────
+
+.dui-selectmenu-item {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 var(--dui-item-pad);
+  cursor: default;
+  user-select: none;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.dui-selectmenu-item-active {
+  background: var(--dui-accent-bg);
+  color: var(--dui-accent-fg);
+}
+
+.dui-selectmenu-item-selected {
+  font-weight: 500;
+}
+
+.dui-selectmenu-item-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.dui-selectmenu-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ── Empty state ───────────────────────────────────────────────────────
+
+.dui-selectmenu-empty {
+  padding: 8px var(--dui-item-pad);
+  opacity: 0.55;
+  font-style: italic;
+  list-style: none;
+}

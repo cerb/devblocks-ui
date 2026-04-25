@@ -35,3 +35,6 @@ export type { TooltipOptions } from './tooltip/types';
 export { DatePicker } from './datepicker/datepicker';
 export type { DatePickerOptions } from './datepicker/types';
 
+export { SelectMenu } from './selectmenu/selectmenu';
+export type { SelectMenuOptions } from './selectmenu/types';
+

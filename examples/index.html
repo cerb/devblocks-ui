@@ -29,6 +29,7 @@
     <a href="#dialog">Dialog</a>
     <a href="#tooltip">Tooltip</a>
     <a href="#datepicker">DatePicker</a>
+    <a href="#selectmenu">SelectMenu</a>
   </nav>
 
   <main>
@@ -457,6 +458,105 @@
         <div class="code-blocks">
           <pre><code class="language-html" id="code-datepicker-html"></code></pre>
           <pre><code class="language-javascript" id="code-datepicker-js"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="component-category" id="selectmenu">SelectMenu</h2>
+
+    <!-- ───── SelectMenu — basic ──────────────────────────────────────── -->
+    <section class="component">
+      <h3>Basic</h3>
+      <p class="component-desc">
+        Wraps a <code>&lt;select&gt;</code> element with a styled trigger and
+        floating panel. The underlying <code>&lt;select&gt;</code> is hidden but
+        stays in the DOM so its value submits with any form. Click the trigger or
+        press Space/Enter/Arrow to open; click an item or press Enter to select;
+        Escape closes.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <div>
+            <label for="sm-basic" class="demo-field-label">Favourite fruit</label>
+            <select id="sm-basic" name="fruit">
+              <option value="apple">Apple</option>
+              <option value="banana">Banana</option>
+              <option value="cherry">Cherry</option>
+              <option value="durian" disabled>Durian (disabled)</option>
+              <option value="elderberry">Elderberry</option>
+              <option value="fig">Fig</option>
+              <option value="grape">Grape</option>
+              <option value="honeydew">Honeydew</option>
+              <option value="kiwi">Kiwi</option>
+              <option value="lemon">Lemon</option>
+            </select>
+          </div>
+          <output id="sm-basic-result" class="demo-output">No selection yet.</output>
+          <button id="sm-basic-set" type="button" class="demo-trigger">Set "Grape" (API)</button>
+        </div>
+
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-sm-basic-html"></code></pre>
+          <pre><code class="language-javascript" id="code-sm-basic-js"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── SelectMenu — large + type-to-filter ────────────────────── -->
+    <section class="component">
+      <h3>Large list with type-to-filter</h3>
+      <p class="component-desc">
+        Open the menu and type to filter — for example, type <kbd>Los</kbd> or
+        <kbd>Ang</kbd> to narrow a full timezone list down to matching entries.
+        The filter text appears above the list; Backspace removes characters.
+        Selecting an item (or pressing Escape) clears the filter. The currently
+        selected value is unchanged until you explicitly pick a new one.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <div>
+            <label for="sm-tz" class="demo-field-label">Time zone</label>
+            <select id="sm-tz" name="timezone"></select>
+          </div>
+          <output id="sm-tz-result" class="demo-output">No selection yet.</output>
+        </div>
+
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-sm-tz-html"></code></pre>
+          <pre><code class="language-javascript" id="code-sm-tz-js"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── SelectMenu — onRender (custom item markup) ─────────────── -->
+    <section class="component">
+      <h3>Custom rendering (<code>onRender</code>)</h3>
+      <p class="component-desc">
+        The <code>onRender</code> callback receives the rendered <code>&lt;li&gt;</code>
+        and the source <code>&lt;option&gt;</code> before the item is inserted into the
+        DOM, letting you prepend icons, badges, or any additional markup.
+        The default label span is already present; add siblings around it.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <div>
+            <label for="sm-status" class="demo-field-label">Status</label>
+            <select id="sm-status" name="status">
+              <option value="active">Active</option>
+              <option value="pending">Pending</option>
+              <option value="archived">Archived</option>
+              <option value="deleted">Deleted</option>
+            </select>
+          </div>
+          <output id="sm-status-result" class="demo-output">No selection yet.</output>
+        </div>
+
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-sm-status-html"></code></pre>
+          <pre><code class="language-javascript" id="code-sm-status-js"></code></pre>
         </div>
       </div>
     </section>
