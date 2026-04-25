@@ -185,6 +185,64 @@ const menu = new Menu(document.querySelector('ul#menu-deep'), {
 });
 `.trim();
 
+// ── Demo: inline menu ─────────────────────────────────────────────────
+
+{
+  const inlineUl = document.getElementById('menu-inline') as HTMLUListElement;
+  const result   = document.getElementById('menu-inline-result') as HTMLElement;
+  const closeBtn = document.getElementById('menu-inline-close') as HTMLButtonElement;
+  const openBtn  = document.getElementById('menu-inline-open')  as HTMLButtonElement;
+
+  const menuInline = new Menu(inlineUl, {
+    inline: true,
+    onSelect: (_renderedLi, sourceLi) => {
+      const id = sourceLi.dataset['id'] ?? '(no id)';
+      const label = sourceLi.firstChild?.textContent?.trim() ?? '';
+      result.textContent = `Selected: ${label} [${id}]`;
+    },
+  });
+
+  closeBtn.addEventListener('click', () => menuInline.close());
+  openBtn.addEventListener('click', () => menuInline.open());
+}
+
+(document.getElementById('code-menu-inline-html') as HTMLElement).textContent = `
+<ul id="menu-inline" hidden>
+  <li data-id="new">New
+    <ul>
+      <li data-id="new.doc">Document</li>
+      <li data-id="new.folder">Folder</li>
+    </ul>
+  </li>
+  <li data-id="open">Open</li>
+  <li data-id="save">Save</li>
+  <li data-id="export">Export
+    <ul>
+      <li data-id="export.pdf">PDF</li>
+      <li data-id="export.csv">CSV</li>
+      <li data-id="export.json">JSON</li>
+    </ul>
+  </li>
+  <li data-id="quit">Quit</li>
+</ul>
+`.trim();
+
+(document.getElementById('code-menu-inline') as HTMLElement).textContent = `
+import { Menu } from 'devblocks-ui';
+
+const menu = new Menu(document.querySelector('ul#menu-inline'), {
+  inline: true,
+  onSelect: (_renderedLi, sourceLi) => {
+    console.log('selected', sourceLi.dataset.id);
+  },
+});
+
+// The root panel is already visible — no open(anchor) call needed.
+// Close/re-open programmatically:
+menu.close();
+menu.open();
+`.trim();
+
 // ── Demo: tabs — anchor ───────────────────────────────────────────────
 
 {

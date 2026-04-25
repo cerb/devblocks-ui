@@ -14,6 +14,13 @@ export interface MenuOptions {
   openDelay?: number;
   /** Extra rows rendered above/below the visible window. Default 6. */
   virtBuffer?: number;
+  /**
+   * Render the root panel inline in the document flow (inserted after the
+   * source UL) rather than floating via position:fixed.  Submenus still
+   * float.  The menu opens automatically on construction; leaf selection
+   * collapses submenus but keeps the root visible.  close() still works.
+   */
+  inline?: boolean;
 }
 
 /**

@@ -35,6 +35,7 @@ const DEFAULTS: ResolvedOpts = {
   virtThreshold: 60,
   openDelay: 80,
   virtBuffer: 6,
+  inline: false,
 };
 
 function makeSpacerLi(): HTMLLIElement {
@@ -47,6 +48,7 @@ function makeSpacerLi(): HTMLLIElement {
 export class Menu {
   private opts: ResolvedOpts;
   private root: MenuItem[];
+  private sourceUl: HTMLUListElement;
   private pnls: Panel[] = [];
   private hoverTimer: number | null = null;
   private anchor: HTMLElement | null = null;
@@ -56,22 +58,39 @@ export class Menu {
   constructor(ul: HTMLUListElement, opts: MenuOptions = {}) {
     this.opts = { ...DEFAULTS, ...opts };
     this.root = parseUl(ul);
+    this.sourceUl = ul;
+    if (this.opts.inline) this.open();
   }
 
   // ── Public API ──────────────────────────────────────────────────────
 
-  open(anchor: HTMLElement): void {
+  open(anchor?: HTMLElement): void {
     this.close();
-    this.anchor = anchor;
-    this.docDown = (e: PointerEvent) => {
-      // Let the trigger's click handler own the toggle; only close on
-      // genuine outside clicks (anything that isn't a panel or the anchor).
-      if (this.anchor && this.anchor.contains(e.target as Node)) return;
-      if (!this.hitTest(e.target as Node)) this.close();
-    };
     this.docKey = (e: KeyboardEvent) => this.onKey(e);
-    document.addEventListener('pointerdown', this.docDown, { capture: true });
     document.addEventListener('keydown', this.docKey);
+
+    if (this.opts.inline) {
+      // For inline menus, clicks outside the panels collapse floating
+      // submenus but leave the root panel in place.
+      this.docDown = (e: PointerEvent) => {
+        if (!this.hitTest(e.target as Node)) {
+          while (this.pnls.length > 1) {
+            const popped = this.pnls.pop();
+            popped?.el.remove();
+          }
+        }
+      };
+    } else {
+      this.anchor = anchor ?? null;
+      this.docDown = (e: PointerEvent) => {
+        // Let the trigger's click handler own the toggle; only close on
+        // genuine outside clicks (anything that isn't a panel or the anchor).
+        if (this.anchor && this.anchor.contains(e.target as Node)) return;
+        if (!this.hitTest(e.target as Node)) this.close();
+      };
+    }
+
+    document.addEventListener('pointerdown', this.docDown, { capture: true });
     this.push(this.root, 0);
   }
 
@@ -108,16 +127,23 @@ export class Menu {
       popped?.el.remove();
     }
     const pnl = this.buildPanel(items, depth);
-    document.body.appendChild(pnl.el);
     this.pnls.push(pnl);
-    this.place(pnl, depth);
+    if (this.opts.inline && depth === 0) {
+      // Insert the root panel into the document flow right after the source UL.
+      this.sourceUl.insertAdjacentElement('afterend', pnl.el);
+    } else {
+      document.body.appendChild(pnl.el);
+      this.place(pnl, depth);
+    }
   }
 
   private buildPanel(items: MenuItem[], depth: number): Panel {
     const o = this.opts;
     const virt = items.length > o.virtThreshold;
     const el = document.createElement('ul');
-    el.className = 'dui-menu-panel' + (virt ? ' dui-menu-panel-virt' : '');
+    el.className = 'dui-menu-panel'
+      + (virt ? ' dui-menu-panel-virt' : '')
+      + (this.opts.inline && depth === 0 ? ' dui-menu-panel-inline' : '');
     el.setAttribute('role', 'menu');
 
     const pnl: Panel = {
@@ -257,7 +283,15 @@ export class Menu {
     const item = pnl.items[+(li.dataset['i'] ?? -1)];
     if (item && !item.children && typeof this.opts.onSelect === 'function') {
       this.opts.onSelect(li, item.el);
-      this.close();
+      if (this.opts.inline) {
+        // Collapse floating submenus but leave the root panel open.
+        while (this.pnls.length > 1) {
+          const popped = this.pnls.pop();
+          popped?.el.remove();
+        }
+      } else {
+        this.close();
+      }
     }
   }
 
@@ -279,7 +313,7 @@ export class Menu {
         if (depth > 0) {
           const popped = this.pnls.pop();
           popped?.el.remove();
-        } else {
+        } else if (!this.opts.inline) {
           this.close();
         }
         return;
@@ -303,7 +337,14 @@ export class Menu {
           this.push(item.children, pnl.depth + 1);
         } else if (typeof this.opts.onSelect === 'function') {
           this.opts.onSelect(active, item.el);
-          this.close();
+          if (this.opts.inline) {
+            while (this.pnls.length > 1) {
+              const popped = this.pnls.pop();
+              popped?.el.remove();
+            }
+          } else {
+            this.close();
+          }
         }
         return;
       }

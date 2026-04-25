@@ -151,6 +151,51 @@
       </div>
     </section>
 
+    <!-- ───── Menu — inline ───────────────────────────────────────── -->
+    <section class="component">
+      <h3>Inline</h3>
+      <p class="component-desc">
+        Pass <code>inline: true</code> to render the root panel in the document
+        flow rather than floating. The menu opens automatically on construction
+        and is inserted right after the hidden source UL. Submenus still float.
+        Selecting a leaf collapses submenus but leaves the root visible;
+        call <code>menu.close()</code> to remove it programmatically.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <ul id="menu-inline" hidden>
+            <li data-id="new">New
+              <ul>
+                <li data-id="new.doc">Document</li>
+                <li data-id="new.folder">Folder</li>
+              </ul>
+            </li>
+            <li data-id="open">Open</li>
+            <li data-id="save">Save</li>
+            <li data-id="export">Export
+              <ul>
+                <li data-id="export.pdf">PDF</li>
+                <li data-id="export.csv">CSV</li>
+                <li data-id="export.json">JSON</li>
+              </ul>
+            </li>
+            <li data-id="quit">Quit</li>
+          </ul>
+          <output id="menu-inline-result" class="demo-output">No selection yet.</output>
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <button id="menu-inline-close" type="button" class="demo-trigger">Close (API)</button>
+            <button id="menu-inline-open"  type="button" class="demo-trigger">Re-open (API)</button>
+          </div>
+        </div>
+
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-menu-inline-html"></code></pre>
+          <pre><code class="language-javascript" id="code-menu-inline"></code></pre>
+        </div>
+      </div>
+    </section>
+
     <h2 class="component-category">Tabs</h2>
 
     <!-- ───── Tabs — anchor (static panels) ────────────────────────── -->
