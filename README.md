@@ -12,7 +12,7 @@ Built to replace jQuery UI with hand-rolled components that are small, fast, and
 | Toggle    | Available — animated binary switch wrapping `input[type=checkbox]` |
 | Spinner   | Available — CSS-animated loading indicator |
 | Tabs      | Available — anchor (static) and dynamic (Ajax) panels, full keyboard nav |
-| Dialog    | Planned                      |
+| Dialog    | Available — floating, draggable, resizable, minimize/restore, multi-instance z-index focus |
 
 ## Install
 
@@ -160,6 +160,48 @@ interface TabInfo {
 Public methods: `select(index)`, `get active()`, `refresh(index)`, `sync()`, `destroy()`.
 
 Pass a `<ul>` of `<li><a href="...">` items. Anchor tabs (`href="#id"`) toggle a sibling `<div id="id">`. Dynamic tabs (`href="/some/url"`) fetch their content on first click and cache it; call `refresh(index)` to force a reload. Arrow keys navigate; Space/Enter activate.
+
+## Dialog — options
+
+```ts
+interface DialogOptions {
+  title?:      string;                               // titlebar label (default '')
+  draggable?:  boolean;                              // drag by titlebar (default true)
+  resizable?:  boolean;                              // resize from edges/corners (default true)
+  closable?:   boolean;                              // show close button (default true)
+  width?:      number;                               // initial width in px (default 400)
+  minWidth?:   number;                               // resize floor in px (default 200)
+  minHeight?:  number;                               // resize floor in px (default 80)
+  position?:   { x: number; y: number };             // initial position; omit to center
+  onOpen?:     () => void;
+  onClose?:    () => void;
+  onMinimize?: (minimized: boolean) => void;
+}
+```
+
+Public methods: `open()`, `close()`, `isOpen()`, `setTitle(title)`, `destroy()`.
+
+Pass any existing element as the content area — it is moved inside the dialog on construction and restored to its original DOM position on `destroy()`. The dialog is appended to `<body>` and hidden until `open()` is called. Clicking any dialog brings it to the front (z-index); pressing Escape closes the topmost open dialog.
+
+```html
+<div id="my-content">
+  <p>Dialog body content.</p>
+</div>
+
+<script>
+  const dlg = new DevblocksUI.Dialog(document.getElementById('my-content'), {
+    title: 'My Dialog',
+    onClose: () => console.log('closed'),
+  });
+  dlg.open();
+</script>
+```
+
+jQuery plugin:
+
+```js
+$('#my-content').duiDialog({ title: 'My Dialog', trigger: '#open-btn' });
+```
 
 ## Build from source
 

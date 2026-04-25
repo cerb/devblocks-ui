@@ -6,9 +6,7 @@ This file is the canonical context for any Claude session working on this repo. 
 
 Devblocks UI is a hand-rolled, zero-dependency UI component library — TypeScript + Vite + Sass — built to replace jQuery UI in Cerb (enterprise CRM) but designed as a general-purpose library. Anyone should be able to drop the dist into a plain HTML page (IIFE → `window.DevblocksUI`) or import the ESM from a modern bundler.
 
-Currently ships: **Menu** (cascading, virtualizes 5000+ items, inline mode), **Toggle** (animated binary switch for `input[type=checkbox]`), **Spinner** (CSS loading indicator), **Tabs** (anchor + Ajax panels, full keyboard nav).
-
-Planned next: **Dialog** — intended as a near-drop-in replacement for the jQuery UI dialog widget. Don't design it speculatively; wait for jeff@cerb.ai to provide jQuery UI usage examples to mirror.
+Currently ships: **Menu** (cascading, virtualizes 5000+ items, inline mode), **Toggle** (animated binary switch for `input[type=checkbox]`), **Spinner** (CSS loading indicator), **Tabs** (anchor + Ajax panels, full keyboard nav), **Dialog** (floating, draggable, resizable window — near-drop-in replacement for jQuery UI dialog).
 
 ## Conventions (apply to every component)
 
@@ -29,7 +27,7 @@ Planned next: **Dialog** — intended as a near-drop-in replacement for the jQue
 ```
 src/
   index.ts               # public entry — re-exports each component, registers jQuery plugin
-  jquery-plugin.ts       # $.fn.duiMenu / duiToggle / duiTabs (and future duiDialog)
+  jquery-plugin.ts       # $.fn.duiMenu / duiToggle / duiTabs / duiDialog
   menu/
     menu.ts              # Menu class (floating + inline modes)
     parse.ts             # parseUl()
@@ -48,12 +46,18 @@ src/
     tabs.ts              # Tabs class (anchor + Ajax panels)
     types.ts             # TabsOptions, TabInfo
     index.ts             # re-exports
+  dialog/
+    dialog.ts            # Dialog class (floating, draggable, resizable)
+    types.ts             # DialogOptions
+    icons.ts             # constant SVG strings (minimize, restore, close)
+    index.ts             # re-exports
 styles/
   tokens.scss            # CSS custom properties (light + dark)
   menu.scss              # all .dui-menu-* rules; uses var(--dui-*) only
   toggle.scss            # all .dui-toggle-* rules
   spinner.scss           # all .dui-spinner-* rules
   tabs.scss              # all .dui-tab-* rules
+  dialog.scss            # all .dui-dialog-* rules
   index.scss             # @use 'tokens'; @use each component
 examples/
   index.html             # demo page (served by `npm run dev`)
@@ -80,7 +84,7 @@ The `npm run build:js` step uses `vite build` in library mode (see `vite.config.
 
 For UI-affecting changes, run `npm run dev`, open http://localhost:5173/, exercise the demos manually. Type checking does not catch UI regressions.
 
-## Adding a new component (e.g. Dialog)
+## Adding a new component
 
 1. `src/dialog/{dialog.ts,types.ts,index.ts}` — class + types. Add icon files only if needed.
 2. Re-export from `src/index.ts`: `export { Dialog } from './dialog/dialog';` plus `export type { DialogOptions } from './dialog/types';`.
