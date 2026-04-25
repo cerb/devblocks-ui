@@ -123,6 +123,13 @@ export class DatePicker {
       this.close();
       this.inputEl.focus();
     } else {
+      // Sync to whatever the user typed while the calendar was closed.
+      const parsed = this.parseDate(this.inputEl.value, this.opts.outputFormat);
+      if (parsed) {
+        this.selectedDate = parsed;
+        this.viewYear  = parsed.getFullYear();
+        this.viewMonth = parsed.getMonth();
+      }
       this.openAndFocus();
     }
   };
