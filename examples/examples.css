@@ -53,6 +53,39 @@ main {
 }
 .theme-toggle:hover { opacity: 1; }
 
+.component-index {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 24px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.component-index a {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid #d1d5db;
+  font-size: 13px;
+  font-weight: 500;
+  color: inherit;
+  text-decoration: none;
+  background: #fff;
+  transition: border-color 120ms, background 120ms;
+}
+.component-index a:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+body.page-dark .component-index a {
+  background: #111827;
+  border-color: #374151;
+}
+body.page-dark .component-index a:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
 .component-category {
   margin: 48px 0 0;
   font-size: 26px;
