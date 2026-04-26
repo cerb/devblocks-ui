@@ -29,6 +29,7 @@ export interface MenuOptions {
  */
 export interface MenuItem {
   label: string;
+  separator?: boolean;
   /** The original source LI — passed back as the second arg to onSelect. */
   el: HTMLLIElement;
   children: MenuItem[] | null;

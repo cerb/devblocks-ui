@@ -176,7 +176,17 @@ export class Menu {
     return pnl;
   }
 
-  private mkItem(item: MenuItem, idx: number): HTMLLIElement {
+  private mkItem(item: MenuItem, idx: number, virt = false): HTMLLIElement {
+    if (item.separator) {
+      const li = document.createElement('li');
+      li.className = 'dui-menu-separator';
+      li.setAttribute('role', 'separator');
+      li.dataset['i'] = String(idx);
+      if (virt) li.style.height = this.opts.itemHeight + 'px';
+      li.appendChild(document.createElement('hr'));
+      return li;
+    }
+
     const li = document.createElement('li');
     li.className = 'dui-menu-item' + (item.children ? ' dui-menu-item-has-sub' : '');
     li.setAttribute('role', 'menuitem');
@@ -233,7 +243,7 @@ export class Menu {
 
     const frag = document.createDocumentFragment();
     for (let i = s; i <= e2; i++) {
-      const li = this.mkItem(pnl.items[i], i);
+      const li = this.mkItem(pnl.items[i], i, true);
       if (i === pnl.activeIdx) li.classList.add('dui-menu-item-active');
       frag.appendChild(li);
     }
@@ -357,13 +367,28 @@ export class Menu {
   }
 
   private navigate(pnl: Panel, dir: number, home = false, end = false): void {
-    const len = pnl.items.length;
-    let next = pnl.activeIdx < 0 ? (dir > 0 ? -1 : 0) : pnl.activeIdx;
+    const items = pnl.items;
+    const len = items.length;
+    if (len === 0) return;
 
-    if (home) next = 0;
-    else if (end) next = len - 1;
-    else next = ((next + dir) % len + len) % len;
+    let next: number;
+    if (home) {
+      next = 0;
+      while (next < len - 1 && items[next].separator) next++;
+    } else if (end) {
+      next = len - 1;
+      while (next > 0 && items[next].separator) next--;
+    } else {
+      const step = dir > 0 ? 1 : -1;
+      const cur = pnl.activeIdx < 0 ? (dir > 0 ? -1 : len) : pnl.activeIdx;
+      next = cur;
+      for (let t = 0; t < len; t++) {
+        next = ((next + step) % len + len) % len;
+        if (!items[next].separator) break;
+      }
+    }
 
+    if (items[next]?.separator) return;
     pnl.activeIdx = next;
 
     if (pnl.virt) {
@@ -371,10 +396,9 @@ export class Menu {
       pnl.el.scrollTop = Math.max(0, next * ih - (pnl.visH / 2) + ih / 2);
       this.renderVirt(pnl);
     } else {
-      const items = pnl.el.querySelectorAll('.dui-menu-item');
       const prev = pnl.el.querySelectorAll('.dui-menu-item-active');
       for (let i = 0; i < prev.length; i++) prev[i].classList.remove('dui-menu-item-active');
-      const target = items[next] as HTMLLIElement | undefined;
+      const target = pnl.el.querySelector(`.dui-menu-item[data-i="${next}"]`) as HTMLLIElement | null;
       if (target) {
         target.classList.add('dui-menu-item-active');
         target.scrollIntoView({ block: 'nearest' });

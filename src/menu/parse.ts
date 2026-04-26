@@ -10,6 +10,11 @@ export function parseUl(ul: HTMLUListElement): MenuItem[] {
     const child = ul.children[i];
     if (!(child instanceof HTMLLIElement)) continue;
 
+    if ((child.textContent ?? '').trim() === '') {
+      out.push({ label: '', separator: true, el: child, children: null });
+      continue;
+    }
+
     const childUl = child.querySelector(':scope > ul');
 
     let label = '';

@@ -64,6 +64,21 @@
   align-items: center;
 }
 
+.dui-menu-separator {
+  display: flex;
+  align-items: center;
+  height: 9px;
+  padding: 0;
+  pointer-events: none;
+
+  hr {
+    flex: 1;
+    border: none;
+    border-top: 1px solid var(--dui-border);
+    margin: 0 var(--dui-item-pad);
+  }
+}
+
 .dui-menu-spacer {
   display: block;
   padding: 0;
