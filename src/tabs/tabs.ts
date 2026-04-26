@@ -30,6 +30,7 @@ type ResolvedOpts = Required<Omit<TabsOptions, 'onTabSelected' | 'onBeforeTabLoa
 
 const DEFAULTS: ResolvedOpts = {
   active: 0,
+  executeScripts: false,
   onTabSelected: null,
   onBeforeTabLoad: null,
 };
@@ -277,6 +278,7 @@ export class Tabs {
       // innerHTML is intentional: this component is designed to load
       // server-generated HTML fragments from trusted internal endpoints.
       tab.panel.innerHTML = html;
+      if (this.opts.executeScripts) this.runScripts(tab.panel);
       tab.loaded = true;
     } catch {
       if (signal.aborted) return;
@@ -286,6 +288,19 @@ export class Tabs {
       errEl.textContent = 'Failed to load content.';
       tab.panel.appendChild(errEl);
       // loaded stays false so refresh() or the next select() will retry.
+    }
+  }
+
+  private runScripts(container: HTMLElement): void {
+    for (const orig of Array.from(container.querySelectorAll('script'))) {
+      const el = document.createElement('script');
+      if (orig.nonce)       el.nonce       = orig.nonce;
+      if (orig.type)        el.type        = orig.type;
+      if (orig.src)         el.src         = orig.src;
+      if (orig.crossOrigin) el.crossOrigin = orig.crossOrigin;
+      if (orig.integrity)   el.integrity   = orig.integrity;
+      if (!orig.src)        el.textContent = orig.textContent;
+      orig.replaceWith(el);
     }
   }
 

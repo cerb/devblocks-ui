@@ -245,7 +245,10 @@
         <code>fetch()</code> on first click. A spinner shows while loading;
         content is cached after the first load. Call <code>tabs.refresh(index)</code>
         to force a reload. The component auto-manages the panel
-        <code>&lt;div&gt;</code> — you don't define it.
+        <code>&lt;div&gt;</code> — you don't define it. Pass
+        <code>executeScripts: true</code> to re-execute <code>&lt;script&gt;</code>
+        tags in fetched HTML (default <code>false</code>; requires trusted
+        endpoints and CSP protection).
       </p>
       <div class="demo-grid">
         <div class="demo">

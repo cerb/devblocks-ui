@@ -143,6 +143,8 @@ interface TabsOptions {
   active?:          number;   // initial selected tab index (default 0)
   onBeforeTabLoad?: (index: number, tab: TabInfo) => boolean | void;  // return false to cancel
   onTabSelected?:   (index: number, tab: TabInfo) => void;
+  executeScripts?:  boolean;  // re-execute <script> tags in fetched HTML (default false)
+                              // enable only when loading from trusted endpoints with CSP protection
 }
 
 interface TabInfo {

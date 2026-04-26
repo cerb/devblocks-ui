@@ -327,6 +327,7 @@ Tabs.from(ul);            // → Tabs | undefined
   const tabsDynamic = new Tabs(
     document.getElementById('tabs-dynamic') as HTMLUListElement,
     {
+      executeScripts: true,
       onTabSelected: (index, tab) => {
         const label = tab.li.querySelector('a')?.textContent?.trim() ?? '';
         result.textContent = `Selected tab ${index}: ${label}${tab.isDynamic ? ' (Ajax)' : ''}`;
@@ -351,6 +352,9 @@ Tabs.from(ul);            // → Tabs | undefined
 // Content is fetched on first click and cached.  Use refresh() to reload.
 
 const tabs = new Tabs(document.querySelector('ul#my-tabs'), {
+  // executeScripts: false (default) — <script> tags in fetched HTML are ignored.
+  // Set to true only when loading from trusted endpoints with CSP protection.
+  executeScripts: true,
   onTabSelected: (index, tab) => {
     if (tab.isDynamic) console.log('loaded from', tab.href);
   },
