@@ -45,9 +45,7 @@
 
 .dui-tab-panel {
   display: none;
-  padding: 16px;
-  color: var(--dui-fg);
-  font-size: var(--dui-font-size);
+  padding: 8px;
 
   &.dui-tab-panel-active {
     display: block;
