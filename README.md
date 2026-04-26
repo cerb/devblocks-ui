@@ -100,7 +100,9 @@ Available tokens are defined in [`styles/tokens.scss`](./styles/tokens.scss).
 
 ```ts
 interface MenuOptions {
-  onSelect?:      (renderedLi: HTMLLIElement, sourceLi: HTMLLIElement) => void;
+  onSelect?:      (renderedLi: HTMLLIElement, sourceLi: HTMLLIElement, event: MouseEvent | KeyboardEvent) => void;
+  onClose?:       () => void;   // called after the menu finishes closing
+  onRenderItem?:  (renderedLi: HTMLLIElement, sourceLi: HTMLLIElement) => void;  // decorate items (add icons, badges, etc.)
   itemHeight?:    number;   // default 28 (px) — must match CSS .dui-menu-item height
   maxHeight?:     number;   // default 380 — max panel height before scroll
   virtThreshold?: number;   // default 60 — virtualize panels with more items than this
@@ -122,7 +124,7 @@ interface ToggleOptions {
 }
 ```
 
-Pass an `input[type=checkbox]` element. The Toggle wraps it in an animated binary switch — the native input stays accessible and submits with its form normally. Programmatic control: `toggle.checked = true/false` (does not fire `onChange`).
+Pass an `input[type=checkbox]` element. The Toggle wraps it in an animated binary switch — the native input stays accessible and submits with its form normally. Programmatic control: `toggle.checked = true/false` (does not fire `onChange`). Call `toggle.sync()` to re-sync the visual after changing `input.checked` externally. Public methods: `toggle.checked` (getter/setter), `sync()`, `destroy()`.
 
 ## Spinner
 
@@ -144,7 +146,9 @@ interface TabsOptions {
 }
 
 interface TabInfo {
+  index:     number;
   li:        HTMLLIElement;
+  panel:     HTMLDivElement;
   href:      string;
   isDynamic: boolean;   // true when href is a URL (Ajax tab), false for #anchor tabs
 }
@@ -194,14 +198,14 @@ Pass any existing element as the content area — it is moved inside the dialog 
 
 ```ts
 interface TooltipOptions {
-  target:    string;   // CSS selector for the anchor element
-  maxWidth?: number;   // max tooltip width in px (default 260)
+  target?:   string | HTMLElement;   // CSS selector or element for the anchor
+  maxWidth?: number;                 // max tooltip width in px (default 280)
   onOpen?:   () => void;
   onClose?:  () => void;
 }
 ```
 
-Public methods: `open()`, `close()`, `isOpen()`, `destroy()`.
+Public methods: `open()`, `close()`, `isOpen()`, `setTarget(target)`.
 
 Pass the element that contains the tooltip text (can be `hidden`). The tooltip floats above or below the `target` element, auto-flipping based on available viewport space. A directional arrow points at the anchor. Click outside or call `close()` to dismiss.
 
@@ -209,10 +213,11 @@ Pass the element that contains the tooltip text (can be `hidden`). The tooltip f
 
 ```ts
 interface DatePickerOptions {
-  startOfWeek?: 'mon' | 'sun';   // default 'mon'
-  format?:      string;          // default 'YYYY-MM-DD'
-  defaultDate?: Date | string | null;
-  onSelect?:    (date: Date, formatted: string) => void;
+  startOfWeek?:  'mon' | 'sun';   // default 'mon'
+  outputFormat?: string;          // format written to input after selection (default 'YYYY-MM-DD')
+  parseFormat?:  string;          // format used to read a pre-existing input value on init; defaults to outputFormat
+  trigger?:      'auto' | 'button';   // 'auto' (default) opens on click/focus; 'button' inserts a toggle button
+  onSelect?:     (date: Date, formatted: string) => void;
 }
 ```
 
@@ -233,8 +238,8 @@ Pass an `input[type=text]`. The calendar popup opens on click or focus and close
 
 <script>
   const dp = new DevblocksUI.DatePicker(document.getElementById('my-date'), {
-    format:      'MM/DD/YYYY',
-    startOfWeek: 'sun',
+    outputFormat: 'MM/DD/YYYY',
+    startOfWeek:  'sun',
     onSelect: (date, formatted) => console.log(formatted),
   });
 </script>

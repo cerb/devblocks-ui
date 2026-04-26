@@ -82,16 +82,28 @@ wireMenu('menu-small-trigger', 'menu-small', 'menu-small-result');
 import { Menu } from 'devblocks-ui';
 import 'devblocks-ui/styles';
 
-const menu = new Menu(document.querySelector('ul#menu-small'), {
-  onSelect: (renderedLi, sourceLi) => {
+const menu = new Menu(document.querySelector('ul#my-menu'), {
+  // Callbacks
+  onSelect:     (renderedLi, sourceLi, event) => {
     console.log('selected', sourceLi.dataset.id);
   },
+  onClose:      () => { /* menu closed and panels removed */ },
+  onRenderItem: (renderedLi, sourceLi) => { /* add icons, badges, etc. */ },
+  // Layout
+  itemHeight:    28,    // px — must match CSS .dui-menu-item height (default 28)
+  maxHeight:     380,   // max panel height before scroll (default 380)
+  virtThreshold: 60,    // virtualize panels with more items than this (default 60)
+  virtBuffer:    6,     // extra rows above/below the visible window (default 6)
+  openDelay:     80,    // ms hover delay before submenu opens (default 80)
+  inline:        false, // render root panel in document flow (default false)
 });
 
-document.querySelector('#menu-small-trigger')
-  .addEventListener('click', function () {
-    menu.isOpen() ? menu.close() : menu.open(this);
-  });
+// Methods:
+menu.open(anchorEl); // show (floating) — pass anchor element to position against
+menu.open();         // re-open inline menu (no anchor needed)
+menu.close();        // close and remove rendered panels
+menu.isOpen();       // → boolean
+menu.destroy();      // close, remove panels, detach all event listeners
 `.trim();
 
 // ── Demo: large (5000 items) ──────────────────────────────────────────
@@ -277,19 +289,26 @@ menu.open();
 (document.getElementById('code-tabs-static') as HTMLElement).textContent = `
 import { Tabs } from 'devblocks-ui';
 
+// TabInfo shape (passed to callbacks):
+//   index:     number          — 0-based tab index
+//   li:        HTMLLIElement   — the source <li>
+//   panel:     HTMLDivElement  — the content panel
+//   href:      string          — '#anchor' or '/url'
+//   isDynamic: boolean         — true for Ajax tabs
+
 const tabs = new Tabs(document.querySelector('ul#my-tabs'), {
-  active: 0,                          // default selected tab index
+  active: 0,                          // initial selected tab index (default 0)
   onBeforeTabLoad: (index, tab) => {
-    if (someCondition) return false;  // cancel the tab switch
+    if (someCondition) return false;  // return false to cancel the switch
   },
   onTabSelected: (index, tab) => {
     console.log('switched to', index, tab.href);
   },
 });
 
-tabs.select(2);          // programmatic switch
-console.log(tabs.active); // current index
-tabs.refresh(1);          // reload dynamic tab 1 from its URL
+tabs.select(2);           // programmatic switch
+tabs.active;              // current index (getter)
+tabs.refresh(1);          // clear cache and reload dynamic tab 1 from its URL
 tabs.sync();              // re-parse <ul> after adding/removing <li> items
 tabs.destroy();           // tear down ARIA attrs and remove dynamic panels
 `.trim();
@@ -413,7 +432,7 @@ spinner.destroy();
 (document.getElementById('code-toggle') as HTMLElement).textContent = `
 import { Toggle } from 'devblocks-ui';
 
-// Enhance a checkbox — keep label markup as-is.
+// Wrap a checkbox with an animated switch.
 // <label>
 //   <input type="checkbox" id="my-toggle">
 //   My setting
@@ -425,8 +444,11 @@ const t = new Toggle(document.getElementById('my-toggle'), {
   },
 });
 
-// Programmatic control (does not fire onChange):
-t.checked = true;
+// Methods / properties:
+t.checked;         // get current state (mirrors input.checked)
+t.checked = true;  // set programmatically (does not fire onChange)
+t.sync();          // re-sync visual after externally changing input.checked
+t.destroy();       // remove toggle wrapper, restore original input
 `.trim();
 
 // ── Demo: dialog — basic ──────────────────────────────────────────────
@@ -462,22 +484,28 @@ t.checked = true;
 import { Dialog } from 'devblocks-ui';
 
 const dlg = new Dialog(document.getElementById('my-content'), {
-  title: 'Example Dialog',
-  draggable: true,   // default
-  resizable: true,   // default
-  closable:  true,   // default
-  width:     400,    // default
-  onOpen:  () => console.log('opened'),
-  onClose: () => console.log('closed'),
+  title:     'Example Dialog', // titlebar label (default '')
+  draggable: true,             // drag by titlebar (default true)
+  resizable: true,             // resize from edges/corners (default true)
+  closable:  true,             // show × close button (default true)
+  width:     400,              // initial width in px (default 400)
+  minWidth:  200,              // resize floor in px (default 200)
+  minHeight: 80,               // resize floor in px (default 80)
+  position:  { x: 100, y: 100 }, // initial position; omit to center in viewport
+  onOpen:     () => console.log('opened'),
+  onClose:    () => console.log('closed'),
+  onMinimize: (minimized) => console.log(minimized ? 'minimized' : 'restored'),
 });
 
 document.getElementById('open-btn').addEventListener('click', () => {
   dlg.isOpen() ? dlg.close() : dlg.open();
 });
 
-// Additional API:
-dlg.setTitle('New Title');  // update titlebar text
-dlg.destroy();              // remove from DOM, restore content element
+dlg.open();              // show dialog
+dlg.close();             // hide dialog
+dlg.isOpen();            // → boolean
+dlg.setTitle('New Title'); // update titlebar text
+dlg.destroy();           // remove from DOM, restore content element
 `.trim();
 
 // ── Demo: dialog — multiple + closable:false ──────────────────────────
@@ -566,13 +594,20 @@ dlgB.close();
 import { Tooltip } from 'devblocks-ui';
 
 const tip = new Tooltip(document.getElementById('tooltip-text'), {
-  target: '#tooltip-trigger',
+  target:   '#tooltip-trigger', // CSS selector or HTMLElement for the anchor
+  maxWidth: 280,                // max tooltip width in px (default 280)
+  onOpen:   () => console.log('opened'),
+  onClose:  () => console.log('closed'),
 });
 
 document.getElementById('tooltip-trigger').addEventListener('click', () => {
-  if (tip.isOpen()) tip.close();
-  else tip.open();
+  tip.isOpen() ? tip.close() : tip.open();
 });
+
+tip.open();                // show tooltip
+tip.close();               // dismiss tooltip
+tip.isOpen();              // → boolean
+tip.setTarget('#new-btn'); // swap the anchor element
 `.trim();
 
 // ── Demo: datepicker ──────────────────────────────────────────────────
@@ -628,25 +663,31 @@ document.getElementById('tooltip-trigger').addEventListener('click', () => {
 (document.getElementById('code-datepicker-js') as HTMLElement).textContent = `
 import { DatePicker } from 'devblocks-ui';
 
-// Mon-start calendar, ISO output format (default)
 const dp = new DatePicker(document.getElementById('my-date'), {
-  startOfWeek:  'mon',        // 'mon' | 'sun'  (default: 'mon')
-  outputFormat: 'YYYY-MM-DD', // written to input after selection (default: 'YYYY-MM-DD')
-  parseFormat:  'YYYY-MM-DD', // used to read a pre-existing input value on init
-                              //   (omit if same as outputFormat)
+  startOfWeek:  'mon',        // 'mon' | 'sun' (default: 'mon')
+  outputFormat: 'YYYY-MM-DD', // format written to input after selection (default: 'YYYY-MM-DD')
+  parseFormat:  'YYYY-MM-DD', // format used to read a pre-existing input value on init
+                              //   defaults to outputFormat when omitted
+  trigger:      'auto',       // 'auto' (default) — opens on click/focus
+                              // 'button' — inserts a toggle button; use when input has autocomplete
   onSelect: (date, formatted) => {
     console.log(formatted);   // e.g. "2026-04-24"
   },
 });
 
-// Programmatic control:
-dp.setDate(new Date());       // set to today
-dp.setDate('2026-12-25');     // set by string (parsed with outputFormat)
-dp.setDate(null);             // clear
-dp.getDate();                 // → Date | null
-dp.open();                    // open popup
-dp.close();                   // close popup
-dp.destroy();                 // remove popup, detach listeners
+// Format tokens: YYYY (4-digit year), YY (2-digit), MM (zero-padded month),
+//   M (month), DD (zero-padded day), D (day).
+//   Examples: 'YYYY-MM-DD', 'MM/DD/YYYY', 'DD/MM/YYYY'
+
+// Methods:
+dp.setDate(new Date());    // set to a Date object
+dp.setDate('2026-12-25'); // set by string (parsed with outputFormat)
+dp.setDate(null);          // clear
+dp.getDate();              // → Date | null
+dp.open();                 // open popup
+dp.close();                // close popup
+dp.isOpen();               // → boolean
+dp.destroy();              // remove popup, detach listeners
 `.trim();
 
 // ── Demo: datepicker — button trigger ────────────────────────────────────
@@ -721,17 +762,26 @@ const dp = new DatePicker(document.getElementById('my-date'), {
 (document.getElementById('code-sm-basic-js') as HTMLElement).textContent = `
 import { SelectMenu } from 'devblocks-ui';
 
-const sm = new SelectMenu(document.getElementById('fruit'), {
-  onSelect: (value, text, option) => {
-    console.log(value, text);  // e.g. "apple", "Apple"
+const sm = new SelectMenu(document.getElementById('my-select'), {
+  // Callbacks
+  onSelect:  (value, text, option) => {
+    console.log(value, text);   // e.g. "apple", "Apple"
   },
+  onRender:  (li, option) => { /* add icons/badges before <li> is inserted */ },
+  // Layout
+  placeholder:   'Choose one…', // shown when the empty/placeholder option is active
+  itemHeight:    28,             // px — must match CSS .dui-selectmenu-item height (default 28)
+  maxHeight:     380,            // max panel height before scroll (default 380)
+  virtThreshold: 60,             // virtualize panels with more items than this (default 60)
+  virtBuffer:    6,              // extra rows above/below the visible window (default 6)
 });
 
-sm.getValue();       // current <select> value
-sm.setValue('banana'); // set programmatically
-sm.open();           // open panel
-sm.close();          // close panel
-sm.destroy();        // restore <select>, remove trigger
+sm.getValue();            // → current <select> value string
+sm.setValue('banana');    // set programmatically (does not fire onSelect)
+sm.open();                // open panel
+sm.close();               // close panel
+sm.isOpen();              // → boolean
+sm.destroy();             // restore <select>, remove trigger
 `.trim();
 
 // ── Demo: selectmenu — large timezone list with type-to-filter ────────
@@ -917,16 +967,23 @@ const sm = new SelectMenu(document.getElementById('status'), {
 (document.getElementById('code-accordion-basic') as HTMLElement).textContent = `
 import { Accordion } from 'devblocks-ui';
 
+// AccordionItemInfo shape (passed to callbacks):
+//   index:  number             — 0-based section index
+//   header: HTMLHeadingElement — the <h3> element
+//   panel:  HTMLDivElement     — the collapsible content panel
+
 const accordion = new Accordion(document.getElementById('my-accordion'), {
-  active: 0,                          // index of initially open section (default 0)
-  onExpand:  (index, info) => console.log('expanded', index),
+  active:      0,     // index of initially open section (default 0); -1 = all collapsed
+  collapsible: false, // clicking the open section collapses it (default false)
+  scrollable:  false, // cap panel height and add scroll (default false)
+  onExpand:   (index, info) => console.log('expanded', index),
   onCollapse: (index, info) => console.log('collapsed', index),
 });
 
-accordion.expand(1);         // open section 1
-accordion.collapse(0);       // close section 0
-console.log(accordion.expanded); // currently open index (-1 if none)
-accordion.destroy();         // restore original DOM
+accordion.expand(1);      // open section 1
+accordion.collapse(0);    // close section 0
+accordion.expanded;       // currently open index (-1 if none)
+accordion.destroy();      // restore original DOM
 `.trim();
 
 // ── Demo: accordion — collapsible ─────────────────────────────────────
