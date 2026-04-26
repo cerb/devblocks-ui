@@ -4,6 +4,8 @@
 export interface MenuOptions {
   /** Called when a leaf item is clicked or activated via Enter. */
   onSelect?: ((renderedLi: HTMLLIElement, sourceLi: HTMLLIElement) => void) | null;
+  /** Called when the menu finishes closing (panels removed). Not fired for inline menus on leaf selection, which collapse submenus but stay open. */
+  onClose?: (() => void) | null;
   /** Item height in px — must match CSS .dui-menu-item height. Default 28. */
   itemHeight?: number;
   /** Max panel height before vertical scroll kicks in. Default 380. */

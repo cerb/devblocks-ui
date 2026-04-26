@@ -26,10 +26,11 @@ interface Panel {
   spacerB: HTMLLIElement | null;
 }
 
-type ResolvedOpts = Required<Omit<MenuOptions, 'onSelect'>> & Pick<MenuOptions, 'onSelect'>;
+type ResolvedOpts = Required<Omit<MenuOptions, 'onSelect' | 'onClose'>> & Pick<MenuOptions, 'onSelect' | 'onClose'>;
 
 const DEFAULTS: ResolvedOpts = {
   onSelect: null,
+  onClose: null,
   itemHeight: 28,
   maxHeight: 380,
   virtThreshold: 60,
@@ -99,6 +100,7 @@ export class Menu {
       clearTimeout(this.hoverTimer);
       this.hoverTimer = null;
     }
+    const wasOpen = this.pnls.length > 0;
     for (const p of this.pnls) p.el.remove();
     this.pnls = [];
     if (this.docDown) {
@@ -109,6 +111,7 @@ export class Menu {
     }
     this.docDown = null;
     this.docKey = null;
+    if (wasOpen && typeof this.opts.onClose === 'function') this.opts.onClose();
   }
 
   isOpen(): boolean {
