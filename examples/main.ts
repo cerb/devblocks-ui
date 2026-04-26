@@ -104,6 +104,9 @@ menu.open();         // re-open inline menu (no anchor needed)
 menu.close();        // close and remove rendered panels
 menu.isOpen();       // → boolean
 menu.destroy();      // close, remove panels, detach all event listeners
+
+// Retrieve an existing instance from the root element:
+Menu.from(ul);       // → Menu | undefined
 `.trim();
 
 // ── Demo: large (5000 items) ──────────────────────────────────────────
@@ -311,6 +314,9 @@ tabs.active;              // current index (getter)
 tabs.refresh(1);          // clear cache and reload dynamic tab 1 from its URL
 tabs.sync();              // re-parse <ul> after adding/removing <li> items
 tabs.destroy();           // tear down ARIA attrs and remove dynamic panels
+
+// Retrieve an existing instance from the root element:
+Tabs.from(ul);            // → Tabs | undefined
 `.trim();
 
 // ── Demo: tabs — dynamic ──────────────────────────────────────────────
@@ -397,6 +403,9 @@ document.getElementById('spinner-host').appendChild(spinner.el);
 
 // Remove when done loading:
 spinner.destroy();
+
+// Retrieve an existing instance from the span element:
+Spinner.from(spinner.el); // → Spinner | undefined
 `.trim();
 
 // ── Demo: toggle ──────────────────────────────────────────────────────
@@ -449,6 +458,9 @@ t.checked;         // get current state (mirrors input.checked)
 t.checked = true;  // set programmatically (does not fire onChange)
 t.sync();          // re-sync visual after externally changing input.checked
 t.destroy();       // remove toggle wrapper, restore original input
+
+// Retrieve an existing instance from the input element:
+Toggle.from(input); // → Toggle | undefined
 `.trim();
 
 // ── Demo: dialog — basic ──────────────────────────────────────────────
@@ -506,6 +518,9 @@ dlg.close();             // hide dialog
 dlg.isOpen();            // → boolean
 dlg.setTitle('New Title'); // update titlebar text
 dlg.destroy();           // remove from DOM, restore content element
+
+// Retrieve an existing instance from the content element:
+Dialog.from(contentEl);  // → Dialog | undefined
 `.trim();
 
 // ── Demo: dialog — multiple + closable:false ──────────────────────────
@@ -608,6 +623,10 @@ tip.open();                // show tooltip
 tip.close();               // dismiss tooltip
 tip.isOpen();              // → boolean
 tip.setTarget('#new-btn'); // swap the anchor element
+tip.destroy();             // close and deregister
+
+// Retrieve an existing instance from the source element:
+Tooltip.from(srcEl);       // → Tooltip | undefined
 `.trim();
 
 // ── Demo: datepicker ──────────────────────────────────────────────────
@@ -688,6 +707,9 @@ dp.open();                 // open popup
 dp.close();                // close popup
 dp.isOpen();               // → boolean
 dp.destroy();              // remove popup, detach listeners
+
+// Retrieve an existing instance from the input element:
+DatePicker.from(inputEl); // → DatePicker | undefined
 `.trim();
 
 // ── Demo: datepicker — button trigger ────────────────────────────────────
@@ -782,6 +804,9 @@ sm.open();                // open panel
 sm.close();               // close panel
 sm.isOpen();              // → boolean
 sm.destroy();             // restore <select>, remove trigger
+
+// Retrieve an existing instance from the <select> element:
+SelectMenu.from(selectEl); // → SelectMenu | undefined
 `.trim();
 
 // ── Demo: selectmenu — large timezone list with type-to-filter ────────
@@ -984,6 +1009,9 @@ accordion.expand(1);      // open section 1
 accordion.collapse(0);    // close section 0
 accordion.expanded;       // currently open index (-1 if none)
 accordion.destroy();      // restore original DOM
+
+// Retrieve an existing instance from the container element:
+Accordion.from(container); // → Accordion | undefined
 `.trim();
 
 // ── Demo: accordion — collapsible ─────────────────────────────────────

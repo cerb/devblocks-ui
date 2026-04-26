@@ -35,6 +35,7 @@ function makeSpacerLi(): HTMLLIElement {
 }
 
 export class SelectMenu {
+  private static _instances = new WeakMap<HTMLSelectElement, SelectMenu>();
   private opts: ResolvedOpts;
   private select: HTMLSelectElement;
   private uid: number;
@@ -110,6 +111,11 @@ export class SelectMenu {
     });
 
     this.syncTriggerText();
+    SelectMenu._instances.set(select, this);
+  }
+
+  static from(el: HTMLSelectElement): SelectMenu | undefined {
+    return SelectMenu._instances.get(el);
   }
 
   // ── Public API ──────────────────────────────────────────────────────
@@ -196,6 +202,7 @@ export class SelectMenu {
   }
 
   destroy(): void {
+    SelectMenu._instances.delete(this.select);
     this.close();
     this.trigger.removeEventListener('click', this.triggerClick);
     this.trigger.remove();

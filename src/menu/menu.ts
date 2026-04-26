@@ -48,6 +48,7 @@ function makeSpacerLi(): HTMLLIElement {
 }
 
 export class Menu {
+  private static _instances = new WeakMap<HTMLUListElement, Menu>();
   private opts: ResolvedOpts;
   private root: MenuItem[];
   private sourceUl: HTMLUListElement;
@@ -62,6 +63,11 @@ export class Menu {
     this.root = parseUl(ul);
     this.sourceUl = ul;
     if (this.opts.inline) this.open();
+    Menu._instances.set(ul, this);
+  }
+
+  static from(el: HTMLUListElement): Menu | undefined {
+    return Menu._instances.get(el);
   }
 
   // ── Public API ──────────────────────────────────────────────────────
@@ -120,6 +126,7 @@ export class Menu {
   }
 
   destroy(): void {
+    Menu._instances.delete(this.sourceUl);
     this.close();
   }
 

@@ -41,6 +41,7 @@ export class Tabs {
   private activeIndex = -1;
   private abortCtrl: AbortController | null = null;
   private static _uid = 0;
+  private static _instances = new WeakMap<HTMLUListElement, Tabs>();
   private readonly uid: number;
 
   constructor(ul: HTMLUListElement, opts: TabsOptions = {}) {
@@ -51,6 +52,11 @@ export class Tabs {
     this.init();
     this.ul.addEventListener('click', this.onUlClick);
     this.ul.addEventListener('keydown', this.onUlKeydown);
+    Tabs._instances.set(ul, this);
+  }
+
+  static from(el: HTMLUListElement): Tabs | undefined {
+    return Tabs._instances.get(el);
   }
 
   // ── Public API ──────────────────────────────────────────────────────────
@@ -110,6 +116,7 @@ export class Tabs {
   }
 
   destroy(): void {
+    Tabs._instances.delete(this.ul);
     this.abortCtrl?.abort();
     this.ul.removeEventListener('click', this.onUlClick);
     this.ul.removeEventListener('keydown', this.onUlKeydown);

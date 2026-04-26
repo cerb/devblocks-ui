@@ -23,6 +23,7 @@ const WEEKDAY_ABBREVS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
 export class DatePicker {
   private static _uid = 0;
+  private static _instances = new WeakMap<HTMLInputElement, DatePicker>();
 
   readonly el: HTMLDivElement;
 
@@ -101,6 +102,11 @@ export class DatePicker {
       this.inputEl.addEventListener('focus',       this.onInputFocus);
       this.inputEl.addEventListener('click',       this.onInputClick);
     }
+    DatePicker._instances.set(inputEl, this);
+  }
+
+  static from(el: HTMLInputElement): DatePicker | undefined {
+    return DatePicker._instances.get(el);
   }
 
   // ── DOM builders ────────────────────────────────────────────────────────
@@ -570,6 +576,7 @@ export class DatePicker {
   }
 
   destroy(): void {
+    DatePicker._instances.delete(this.inputEl);
     this.close();
     this.inputEl.removeEventListener('input',   this.onInputInput);
     this.inputEl.removeEventListener('keydown', this.onInputKeydown);

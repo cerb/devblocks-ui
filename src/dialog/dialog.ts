@@ -32,6 +32,7 @@ const DEFAULTS: ResolvedOpts = {
 export class Dialog {
   private static _uid = 0;
   private static _zTop = 10000;
+  private static _instances = new WeakMap<HTMLElement, Dialog>();
 
   readonly el: HTMLDivElement;
 
@@ -131,6 +132,11 @@ export class Dialog {
     dlg.addEventListener('pointerdown', this.onPointerDown, true);
 
     document.body.appendChild(dlg);
+    Dialog._instances.set(contentEl, this);
+  }
+
+  static from(el: HTMLElement): Dialog | undefined {
+    return Dialog._instances.get(el);
   }
 
   open(): void {
@@ -200,6 +206,7 @@ export class Dialog {
   }
 
   destroy(): void {
+    Dialog._instances.delete(this.innerContent);
     if (this._open) this.close();
 
     this.el.removeEventListener('pointerdown', this.onPointerDown, true);

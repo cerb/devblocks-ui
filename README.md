@@ -112,7 +112,7 @@ interface MenuOptions {
 }
 ```
 
-Public methods: `open(anchor?)`, `close()`, `isOpen()`, `destroy()`.
+Public methods: `open(anchor?)`, `close()`, `isOpen()`, `destroy()`. Static: `Menu.from(ul)` — returns the `Menu` instance for a given `<ul>`, or `undefined`.
 
 The Menu reads its source `<ul>` once at construction time. The source `<ul>` can be hidden. In normal mode, rendered panels are appended to `<body>` with `position: fixed`. In inline mode (`inline: true`), the root panel is inserted after the source `<ul>` in document flow and the menu opens automatically on construction; submenus still float. `data-*` attributes on each source `<li>` are mirrored onto the rendered `<li>` and available as the second arg of `onSelect`.
 
@@ -124,7 +124,7 @@ interface ToggleOptions {
 }
 ```
 
-Pass an `input[type=checkbox]` element. The Toggle wraps it in an animated binary switch — the native input stays accessible and submits with its form normally. Programmatic control: `toggle.checked = true/false` (does not fire `onChange`). Call `toggle.sync()` to re-sync the visual after changing `input.checked` externally. Public methods: `toggle.checked` (getter/setter), `sync()`, `destroy()`.
+Pass an `input[type=checkbox]` element. The Toggle wraps it in an animated binary switch — the native input stays accessible and submits with its form normally. Programmatic control: `toggle.checked = true/false` (does not fire `onChange`). Call `toggle.sync()` to re-sync the visual after changing `input.checked` externally. Public methods: `toggle.checked` (getter/setter), `sync()`, `destroy()`. Static: `Toggle.from(input)` — returns the `Toggle` instance for a given `<input>`, or `undefined`.
 
 ## Spinner
 
@@ -134,7 +134,7 @@ someElement.appendChild(spinner.el);  // spinner.el is a <span>
 spinner.destroy();                     // removes the element
 ```
 
-CSS-animated loading indicator. Used internally by Tabs while dynamic panels load; also usable standalone.
+CSS-animated loading indicator. Used internally by Tabs while dynamic panels load; also usable standalone. Static: `Spinner.from(spanEl)` — returns the `Spinner` instance for a given `<span>`, or `undefined`.
 
 ## Tabs — options
 
@@ -154,7 +154,7 @@ interface TabInfo {
 }
 ```
 
-Public methods: `select(index)`, `get active()`, `refresh(index)`, `sync()`, `destroy()`.
+Public methods: `select(index)`, `get active()`, `refresh(index)`, `sync()`, `destroy()`. Static: `Tabs.from(ul)` — returns the `Tabs` instance for a given `<ul>`, or `undefined`.
 
 Pass a `<ul>` of `<li><a href="...">` items. Anchor tabs (`href="#id"`) toggle a sibling `<div id="id">`. Dynamic tabs (`href="/some/url"`) fetch their content on first click and cache it; call `refresh(index)` to force a reload. Arrow keys navigate; Space/Enter activate.
 
@@ -176,7 +176,7 @@ interface DialogOptions {
 }
 ```
 
-Public methods: `open()`, `close()`, `isOpen()`, `setTitle(title)`, `destroy()`.
+Public methods: `open()`, `close()`, `isOpen()`, `setTitle(title)`, `destroy()`. Static: `Dialog.from(contentEl)` — returns the `Dialog` instance for a given content element, or `undefined`.
 
 Pass any existing element as the content area — it is moved inside the dialog on construction and restored to its original DOM position on `destroy()`. The dialog is appended to `<body>` and hidden until `open()` is called. Clicking any dialog brings it to the front (z-index); pressing Escape closes the topmost open dialog.
 
@@ -205,7 +205,7 @@ interface TooltipOptions {
 }
 ```
 
-Public methods: `open()`, `close()`, `isOpen()`, `setTarget(target)`.
+Public methods: `open()`, `close()`, `isOpen()`, `setTarget(target)`, `destroy()`. Static: `Tooltip.from(srcEl)` — returns the `Tooltip` instance for a given source element, or `undefined`.
 
 Pass the element that contains the tooltip text (can be `hidden`). The tooltip floats above or below the `target` element, auto-flipping based on available viewport space. A directional arrow points at the anchor. Click outside or call `close()` to dismiss.
 
@@ -221,7 +221,7 @@ interface DatePickerOptions {
 }
 ```
 
-Public methods: `open()`, `close()`, `isOpen()`, `setDate(date)`, `getDate()`, `destroy()`.
+Public methods: `open()`, `close()`, `isOpen()`, `setDate(date)`, `getDate()`, `destroy()`. Static: `DatePicker.from(inputEl)` — returns the `DatePicker` instance for a given `<input>`, or `undefined`.
 
 Pass an `input[type=text]`. The calendar popup opens on click or focus and closes on selection, Escape, or click-outside. The popup scrolls with the page (`position: absolute`).
 
@@ -259,7 +259,7 @@ interface SelectMenuOptions {
 }
 ```
 
-Public methods: `open()`, `close()`, `isOpen()`, `getValue()`, `setValue(value)`, `destroy()`.
+Public methods: `open()`, `close()`, `isOpen()`, `getValue()`, `setValue(value)`, `destroy()`. Static: `SelectMenu.from(selectEl)` — returns the `SelectMenu` instance for a given `<select>`, or `undefined`.
 
 Pass a `<select>` element. SelectMenu replaces the native browser control with a styled trigger button and floating panel while keeping the underlying `<select>` in sync for form submission. Type any characters while the panel is open to filter the list. `onRender` is called for each rendered item and lets you decorate rows (add icons, badges, etc.) without breaking the built-in filter or virtualization.
 
@@ -296,7 +296,7 @@ interface AccordionItemInfo {
 }
 ```
 
-Public methods: `expand(index)`, `collapse(index)`, `get expanded` (current open index, `-1` if none), `destroy()`.
+Public methods: `expand(index)`, `collapse(index)`, `get expanded` (current open index, `-1` if none), `destroy()`. Static: `Accordion.from(containerEl)` — returns the `Accordion` instance for a given container element, or `undefined`.
 
 Pass a `<div>` whose direct children alternate between `<h3>` headers and `<div>` panels. Each `<h3>` becomes a clickable trigger; its following `<div>` expands and collapses with a CSS grid-row animation. Arrow keys navigate between headers; Space/Enter toggles the focused section. When `scrollable` is `true`, panel height is capped by the `--dui-accordion-max-height` token (default `300px`).
 
@@ -316,6 +316,29 @@ Pass a `<div>` whose direct children alternate between `<h3>` headers and `<div>
   });
 </script>
 ```
+
+## Instance retrieval — `ClassName.from(el)`
+
+Every component registers itself in a static `WeakMap` on construction and exposes a `static from(el)` method so you can recover an instance from the root element alone:
+
+```ts
+// Create once, anywhere
+const tabs = new Tabs(document.querySelector('ul#my-tabs'));
+
+// Later, in unrelated code that only has the element
+const el = document.querySelector('ul#my-tabs') as HTMLUListElement;
+Tabs.from(el)?.select(2);          // returns the Tabs instance or undefined
+Dialog.from(contentEl)?.open();
+Toggle.from(input)?.checked;
+Accordion.from(container)?.expand(0);
+DatePicker.from(inputEl)?.getDate();
+SelectMenu.from(selectEl)?.getValue();
+Tooltip.from(srcEl)?.open();
+Menu.from(ul)?.close();
+Spinner.from(spanEl)?.destroy();
+```
+
+`from()` returns `undefined` if no instance was created for that element (or after `destroy()` is called). The WeakMap entries are GC-eligible once the element is garbage-collected — no manual cleanup required.
 
 ## Build from source
 

@@ -46,6 +46,7 @@ export class Accordion {
   private sections: SectionState[] = [];
   private expandedIndex = -1;
   private static _uid = 0;
+  private static _instances = new WeakMap<HTMLElement, Accordion>();
   private readonly uid: number;
 
   constructor(container: HTMLElement, opts: AccordionOptions = {}) {
@@ -56,6 +57,11 @@ export class Accordion {
     this.init();
     this.container.addEventListener('click', this.onClick);
     this.container.addEventListener('keydown', this.onKeydown);
+    Accordion._instances.set(container, this);
+  }
+
+  static from(el: HTMLElement): Accordion | undefined {
+    return Accordion._instances.get(el);
   }
 
   // ── Public API ──────────────────────────────────────────────────────────
@@ -76,6 +82,7 @@ export class Accordion {
   }
 
   destroy(): void {
+    Accordion._instances.delete(this.container);
     this.container.removeEventListener('click', this.onClick);
     this.container.removeEventListener('keydown', this.onKeydown);
     this.container.classList.remove('dui-accordion', 'dui-accordion--scrollable');

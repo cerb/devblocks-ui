@@ -15,6 +15,7 @@ function normalizeTarget(t: TargetInput): string | HTMLElement {
 }
 
 export class Tooltip {
+  private static _instances = new WeakMap<HTMLElement, Tooltip>();
   private src: HTMLElement;
   private opts: ResolvedOpts;
   private panel: HTMLDivElement | null = null;
@@ -24,6 +25,11 @@ export class Tooltip {
     this.src = src;
     const { target, ...rest } = opts;
     this.opts = { maxWidth: 280, ...rest, ...(target != null ? { target: normalizeTarget(target) } : {}) };
+    Tooltip._instances.set(src, this);
+  }
+
+  static from(el: HTMLElement): Tooltip | undefined {
+    return Tooltip._instances.get(el);
   }
 
   setTarget(target: TargetInput): void {
@@ -79,6 +85,11 @@ export class Tooltip {
       this.docDown = null;
     }
     this.opts.onClose?.();
+  }
+
+  destroy(): void {
+    Tooltip._instances.delete(this.src);
+    this.close();
   }
 
   private place(panel: HTMLDivElement, arrow: HTMLDivElement, target: HTMLElement): void {

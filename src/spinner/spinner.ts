@@ -10,6 +10,7 @@
 import { SPINNER_SVG } from './icons';
 
 export class Spinner {
+  private static _instances = new WeakMap<HTMLSpanElement, Spinner>();
   readonly el: HTMLSpanElement;
 
   constructor() {
@@ -19,9 +20,15 @@ export class Spinner {
     this.el.setAttribute('aria-label', 'Loading');
     // One innerHTML write: constant SPINNER_SVG string only.
     this.el.innerHTML = SPINNER_SVG;
+    Spinner._instances.set(this.el, this);
+  }
+
+  static from(el: HTMLSpanElement): Spinner | undefined {
+    return Spinner._instances.get(el);
   }
 
   destroy(): void {
+    Spinner._instances.delete(this.el);
     this.el.remove();
   }
 }

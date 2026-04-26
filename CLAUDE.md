@@ -20,6 +20,7 @@ Currently ships: **Menu** (cascading, virtualizes 5000+ items, inline mode), **T
   - Mirror attributes from source elements only via a strict allowlist (we use `name.startsWith('data-')` in Menu). Never blindly copy attributes; never copy `class`, `style`, or `on*`.
   - No `eval`, `new Function`, or `Function(...)`.
 - **Public API shape**: `new DevblocksUI.<Component>(rootEl, opts)` for vanilla JS, `new Component(rootEl, opts)` for ESM.
+- **Instance retrieval**: every component has `static from(el): Component | undefined`. Implemented via a `private static _instances = new WeakMap<ElementType, Component>()` — register in constructor, delete in `destroy()`. The key is always the element the caller passed to the constructor (for `Dialog` that's `contentEl`/`this.innerContent`; for `Spinner` it's `this.el` since there's no constructor arg).
 - **TypeScript strict mode** is on. Don't relax it without a real reason.
 
 ## Project layout

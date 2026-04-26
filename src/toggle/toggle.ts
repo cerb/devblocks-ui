@@ -13,6 +13,7 @@ import { TOGGLE_SVG } from './icons';
 import type { ToggleOptions } from './types';
 
 export class Toggle {
+  private static _instances = new WeakMap<HTMLInputElement, Toggle>();
   private readonly input: HTMLInputElement;
   private readonly track: HTMLSpanElement;
   private readonly opts: ToggleOptions;
@@ -50,6 +51,11 @@ export class Toggle {
       this.track.addEventListener('pointerdown', this.onPointerDown);
     }
     this.input.addEventListener('change', this.onInputChange);
+    Toggle._instances.set(input, this);
+  }
+
+  static from(el: HTMLInputElement): Toggle | undefined {
+    return Toggle._instances.get(el);
   }
 
   // ── Public API ──────────────────────────────────────────────────────────
@@ -72,6 +78,7 @@ export class Toggle {
   }
 
   destroy(): void {
+    Toggle._instances.delete(this.input);
     if (!this.inLabel) {
       this.track.removeEventListener('pointerdown', this.onPointerDown);
     }
