@@ -34,7 +34,11 @@
   --dui-spinner-color: var(--dui-accent-bg);
 
   // Tabs
-  --dui-tab-hover-bg: rgba(0, 0, 0, 0.04);
+  --dui-tab-hover-bg:    rgba(0, 0, 0, 0.04);
+  --dui-tab-inactive-fg: rgba(0, 0, 0, 0.5);
+  --dui-tab-inactive-bg: rgba(0, 0, 0, 0.05);
+  --dui-tab-active-bg:   transparent;
+  --dui-tab-border:      var(--dui-border);
 
   // DatePicker
   --dui-datepicker-weekday-fg: #6b7280;
@@ -64,7 +68,11 @@
   --dui-toggle-knob: #f9fafb;
 
   // Tabs
-  --dui-tab-hover-bg: rgba(255, 255, 255, 0.06);
+  --dui-tab-hover-bg:    rgba(255, 255, 255, 0.06);
+  --dui-tab-inactive-fg: rgba(255, 255, 255, 0.55);
+  --dui-tab-inactive-bg: rgb(40, 40, 40);
+  --dui-tab-active-bg:   transparent;
+  --dui-tab-border:      rgb(80, 80, 80);
 
   // DatePicker
   --dui-datepicker-weekday-fg: #9ca3af;
