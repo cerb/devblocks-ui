@@ -2,8 +2,8 @@
  * Public option type for the Menu component.
  */
 export interface MenuOptions {
-  /** Called when a leaf item is clicked or activated via Enter. */
-  onSelect?: ((renderedLi: HTMLLIElement, sourceLi: HTMLLIElement) => void) | null;
+  /** Called when a leaf item is clicked or activated via Enter. The originating event is passed as the third argument (MouseEvent for clicks, KeyboardEvent for Enter). */
+  onSelect?: ((renderedLi: HTMLLIElement, sourceLi: HTMLLIElement, event: MouseEvent | KeyboardEvent) => void) | null;
   /** Called when the menu finishes closing (panels removed). Not fired for inline menus on leaf selection, which collapse submenus but stay open. */
   onClose?: (() => void) | null;
   /** Item height in px — must match CSS .dui-menu-item height. Default 28. */

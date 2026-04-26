@@ -295,7 +295,7 @@ export class Menu {
     if (!li) return;
     const item = pnl.items[+(li.dataset['i'] ?? -1)];
     if (item && !item.children && typeof this.opts.onSelect === 'function') {
-      this.opts.onSelect(li, item.el);
+      this.opts.onSelect(li, item.el, e);
       if (this.opts.inline) {
         // Collapse floating submenus but leave the root panel open.
         while (this.pnls.length > 1) {
@@ -349,7 +349,7 @@ export class Menu {
         if (item.children) {
           this.push(item.children, pnl.depth + 1);
         } else if (typeof this.opts.onSelect === 'function') {
-          this.opts.onSelect(active, item.el);
+          this.opts.onSelect(active, item.el, e);
           if (this.opts.inline) {
             while (this.pnls.length > 1) {
               const popped = this.pnls.pop();
