@@ -26,11 +26,12 @@ interface Panel {
   spacerB: HTMLLIElement | null;
 }
 
-type ResolvedOpts = Required<Omit<MenuOptions, 'onSelect' | 'onClose'>> & Pick<MenuOptions, 'onSelect' | 'onClose'>;
+type ResolvedOpts = Required<Omit<MenuOptions, 'onSelect' | 'onClose' | 'onRenderItem'>> & Pick<MenuOptions, 'onSelect' | 'onClose' | 'onRenderItem'>;
 
 const DEFAULTS: ResolvedOpts = {
   onSelect: null,
   onClose: null,
+  onRenderItem: null,
   itemHeight: 28,
   maxHeight: 380,
   virtThreshold: 60,
@@ -211,6 +212,8 @@ export class Menu {
     lbl.className = 'dui-menu-label';
     lbl.textContent = item.label; // textContent — never innerHTML for user data
     li.appendChild(lbl);
+
+    if (typeof this.opts.onRenderItem === 'function') this.opts.onRenderItem(li, item.el);
 
     if (item.children) {
       const arrow = document.createElement('span');

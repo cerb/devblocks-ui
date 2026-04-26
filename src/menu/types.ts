@@ -6,6 +6,13 @@ export interface MenuOptions {
   onSelect?: ((renderedLi: HTMLLIElement, sourceLi: HTMLLIElement, event: MouseEvent | KeyboardEvent) => void) | null;
   /** Called when the menu finishes closing (panels removed). Not fired for inline menus on leaf selection, which collapse submenus but stay open. */
   onClose?: (() => void) | null;
+  /**
+   * Called after the label span is appended to a rendered item but before the
+   * submenu arrow. Use it to insert extra elements (e.g. icons read from
+   * sourceLi.dataset) without breaking the label/arrow order.
+   * Not called for separator items.
+   */
+  onRenderItem?: ((renderedLi: HTMLLIElement, sourceLi: HTMLLIElement) => void) | null;
   /** Item height in px — must match CSS .dui-menu-item height. Default 28. */
   itemHeight?: number;
   /** Max panel height before vertical scroll kicks in. Default 380. */
