@@ -18,7 +18,7 @@
     font-size: var(--dui-font-size);
     color: var(--dui-fg);
     text-decoration: none;
-    border: 1px solid transparent;
+    border: 1px solid var(--dui-border);
     border-radius: var(--dui-radius) var(--dui-radius) 0 0;
     user-select: none;
     white-space: nowrap;
@@ -26,7 +26,6 @@
 
     &:hover {
       background: var(--dui-tab-hover-bg);
-      border-color: var(--dui-border);
     }
 
     &:focus-visible {
@@ -38,9 +37,9 @@
   &.dui-tab-active > a {
     background: var(--dui-bg);
     border-color: var(--dui-border);
-    // Erase the strip's border-bottom behind the active tab, connecting it to
-    // the panel below.
-    border-bottom-color: var(--dui-bg);
+    border-bottom: none;
+    // Cover the strip's border-bottom behind the active tab so the tab
+    // flows into the content below without a dividing line.
     margin-bottom: -1px;
     position: relative;
     z-index: 1;
@@ -51,9 +50,6 @@
 .dui-tab-panel {
   display: none;
   padding: 16px;
-  border: 1px solid var(--dui-border);
-  border-top: 0;
-  background: var(--dui-bg);
   color: var(--dui-fg);
   font-size: var(--dui-font-size);
 
