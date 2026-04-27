@@ -18,4 +18,8 @@ export interface TabsOptions {
    *  Defaults to false. Enable only when fetching from trusted endpoints
    *  and your page has a CSP nonce or equivalent protection. */
   executeScripts?: boolean;
+  /** Persist the active tab index in localStorage and restore it on re-init.
+   *  true = auto-key from page URL + component DOM path; string = fixed key.
+   *  An explicit active option takes precedence (use it for permalink navigation). */
+  remember?: boolean | string;
 }

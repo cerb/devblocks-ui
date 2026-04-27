@@ -266,7 +266,7 @@ menu.open();
   const tabsStatic = new Tabs(
     document.getElementById('tabs-static') as HTMLUListElement,
     {
-      active: 0,
+      remember: true,
       onTabSelected: (index, tab) => {
         const label = tab.li.querySelector('a')?.textContent?.trim() ?? '';
         result.textContent = `Selected tab ${index}: ${label}`;
@@ -301,6 +301,8 @@ import { Tabs } from 'devblocks-ui';
 
 const tabs = new Tabs(document.querySelector('ul#my-tabs'), {
   active: 0,                          // initial selected tab index (default 0)
+  remember: true,                     // persist active tab in localStorage (auto-key)
+  // remember: 'my-tabs',            // or use a fixed key
   onBeforeTabLoad: (index, tab) => {
     if (someCondition) return false;  // return false to cancel the switch
   },
@@ -308,6 +310,9 @@ const tabs = new Tabs(document.querySelector('ul#my-tabs'), {
     console.log('switched to', index, tab.href);
   },
 });
+
+// remember: true  auto-derives a key from the page URL + component DOM path.
+// Pass active: N to override the stored tab (e.g. for permalink navigation).
 
 tabs.select(2);           // programmatic switch
 tabs.active;              // current index (getter)

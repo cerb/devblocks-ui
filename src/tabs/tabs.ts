@@ -25,7 +25,7 @@ interface TabState {
   loaded: boolean;
 }
 
-type ResolvedOpts = Required<Omit<TabsOptions, 'onTabSelected' | 'onBeforeTabLoad'>> &
+type ResolvedOpts = Required<Omit<TabsOptions, 'onTabSelected' | 'onBeforeTabLoad' | 'remember'>> &
   Pick<TabsOptions, 'onTabSelected' | 'onBeforeTabLoad'>;
 
 const DEFAULTS: ResolvedOpts = {
@@ -35,12 +35,27 @@ const DEFAULTS: ResolvedOpts = {
   onBeforeTabLoad: null,
 };
 
+function selectorPath(el: Element): string {
+  const parts: string[] = [];
+  let node: Element | null = el;
+  while (node && node.parentElement) {
+    const tag = node.tagName.toLowerCase();
+    const siblings = Array.from(node.parentElement.children)
+      .filter(c => c.tagName === node!.tagName);
+    const idx = siblings.indexOf(node);
+    parts.unshift(idx > 0 ? `${tag}:nth(${idx})` : tag);
+    node = node.parentElement;
+  }
+  return parts.join('>');
+}
+
 export class Tabs {
   private readonly ul: HTMLUListElement;
   private opts: ResolvedOpts;
   private tabs: TabState[] = [];
   private activeIndex = -1;
   private abortCtrl: AbortController | null = null;
+  private storageKey: string | null = null;
   private static _uid = 0;
   private static _instances = new WeakMap<HTMLUListElement, Tabs>();
   private readonly uid: number;
@@ -50,7 +65,14 @@ export class Tabs {
     this.opts = { ...DEFAULTS, ...opts };
     this.uid = ++Tabs._uid;
 
-    this.init();
+    const r = opts.remember;
+    if (r) {
+      this.storageKey = typeof r === 'string'
+        ? r
+        : `dui-tabs:${location.pathname}${location.search}:${selectorPath(ul)}`;
+    }
+
+    this.init(opts.active);
     this.ul.addEventListener('click', this.onUlClick);
     this.ul.addEventListener('keydown', this.onUlKeydown);
     Tabs._instances.set(ul, this);
@@ -142,7 +164,7 @@ export class Tabs {
 
   // ── Init ─────────────────────────────────────────────────────────────────
 
-  private init(): void {
+  private init(explicitActive: number | undefined): void {
     this.ul.setAttribute('role', 'tablist');
     this.ul.classList.add('dui-tabs');
 
@@ -155,7 +177,17 @@ export class Tabs {
     this.applyAttrs();
 
     if (this.tabs.length > 0) {
-      const initial = Math.max(0, Math.min(this.opts.active ?? 0, this.tabs.length - 1));
+      let initial: number;
+      if (explicitActive !== undefined) {
+        initial = Math.max(0, Math.min(explicitActive, this.tabs.length - 1));
+      } else if (this.storageKey) {
+        try {
+          const stored = parseInt(localStorage.getItem(this.storageKey) ?? '', 10);
+          initial = (!isNaN(stored) && stored >= 0 && stored < this.tabs.length) ? stored : 0;
+        } catch { initial = 0; }
+      } else {
+        initial = 0;
+      }
       this.activateTab(initial, false);
     }
   }
@@ -248,6 +280,9 @@ export class Tabs {
     tab.panel.classList.add('dui-tab-panel-active');
     tab.panel.setAttribute('tabindex', '0');
     this.activeIndex = index;
+    if (this.storageKey) {
+      try { localStorage.setItem(this.storageKey, String(index)); } catch { /* quota / private browsing */ }
+    }
 
     if (tab.isDynamic && !tab.loaded) void this.loadPanel(tab);
 
