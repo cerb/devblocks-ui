@@ -41,3 +41,6 @@ export type { SelectMenuOptions } from './selectmenu/types';
 export { Accordion } from './accordion/accordion';
 export type { AccordionOptions, AccordionItemInfo } from './accordion/types';
 
+export { Sortable } from './sortable/sortable';
+export type { SortableOptions, SortableItemInfo } from './sortable/types';
+

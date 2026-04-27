@@ -54,6 +54,15 @@
   // Accordion
   --dui-accordion-hover-bg:  rgba(0, 0, 0, 0.03);
   --dui-accordion-max-height: 300px;
+
+  // Sortable
+  --dui-z-sortable:             10002;
+  --dui-sortable-helper-rotate: 2deg;
+  --dui-sortable-helper-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
+  --dui-sortable-origin-bg:     rgba(0, 0, 0, 0.04);
+  --dui-sortable-origin-border: rgba(0, 0, 0, 0.15);
+  --dui-sortable-dest-bg:       rgba(37, 99, 235, 0.08);
+  --dui-sortable-dest-border:   rgba(37, 99, 235, 0.5);
 }
 
 [data-dui-theme="dark"] {
@@ -89,4 +98,10 @@
 
   // Accordion
   --dui-accordion-hover-bg: rgba(255, 255, 255, 0.05);
+
+  // Sortable
+  --dui-sortable-origin-bg:     rgba(255, 255, 255, 0.04);
+  --dui-sortable-origin-border: rgba(255, 255, 255, 0.15);
+  --dui-sortable-dest-bg:       rgba(59, 130, 246, 0.12);
+  --dui-sortable-dest-border:   rgba(59, 130, 246, 0.6);
 }

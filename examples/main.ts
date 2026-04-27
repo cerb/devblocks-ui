@@ -1,4 +1,4 @@
-import { Menu, Toggle, Tabs, Spinner, Dialog, Tooltip, DatePicker, SelectMenu, Accordion } from 'devblocks-ui';
+import { Menu, Toggle, Tabs, Spinner, Dialog, Tooltip, DatePicker, SelectMenu, Accordion, Sortable } from 'devblocks-ui';
 import 'devblocks-ui/styles';
 
 declare const Prism: { highlightAllUnder: (root: ParentNode) => void } | undefined;
@@ -1061,6 +1061,127 @@ const accordion = new Accordion(document.getElementById('my-accordion'), {
   active: -1,         // start with all sections closed
   collapsible: true,  // clicking the open section collapses it
   scrollable: false,  // true adds max-height + overflow-y: auto to panels
+});
+`.trim();
+
+// ── Demo: sortable — basic vertical list ──────────────────────────────
+
+{
+  const list   = document.getElementById('sortable-basic') as HTMLElement;
+  const result = document.getElementById('sortable-basic-result') as HTMLElement;
+
+  const sortableBasic = new Sortable(list, {
+    items: '> li',
+    onSorted: (info) => {
+      const labels = Array.from(list.querySelectorAll('li'))
+        .map(li => li.textContent?.trim() ?? '');
+      result.textContent =
+        `Moved from index ${info.fromIndex} → ${info.toIndex}. Order: ${labels.join(', ')}`;
+    },
+  });
+
+  (window as unknown as Record<string, unknown>)['sortableBasic'] = sortableBasic;
+}
+
+(document.getElementById('code-sortable-basic-html') as HTMLElement).textContent = `
+<ul id="my-list">
+  <li>Alpha</li>
+  <li>Beta</li>
+  <li>Gamma</li>
+</ul>
+`.trim();
+
+(document.getElementById('code-sortable-basic-js') as HTMLElement).textContent = `
+import { Sortable } from 'devblocks-ui';
+
+const sortable = new Sortable(document.getElementById('my-list'), {
+  items:     '> li',        // which children are sortable
+  helper:    'original',    // drag the real element (default)
+  distance:  5,             // px to move before drag activates (default)
+  tolerance: 'pointer',     // insertion point follows mouse (default)
+  onStart:   (info) => console.log('drag started', info.fromIndex),
+  onStop:    (info) => console.log('drag stopped', info.toIndex),
+  onSorted:  (info) => console.log('sorted', info.fromIndex, '→', info.toIndex),
+});
+
+// Retrieve an existing instance from the container element:
+Sortable.from(container); // → Sortable | undefined
+
+// Re-apply cursor classes after programmatic DOM changes:
+sortable.refresh();
+
+// Remove all listeners and classes:
+sortable.destroy();
+`.trim();
+
+// ── Demo: sortable — connected lists with handles ─────────────────────
+
+{
+  const listA  = document.getElementById('sortable-list-a') as HTMLElement;
+  const listB  = document.getElementById('sortable-list-b') as HTMLElement;
+  const result = document.getElementById('sortable-connected-result') as HTMLElement;
+
+  const onSorted = (info: { from: HTMLElement; fromIndex: number; to: HTMLElement; toIndex: number }) => {
+    result.textContent =
+      `Moved from ${info.from.id}[${info.fromIndex}] → ${info.to.id}[${info.toIndex}]`;
+  };
+
+  // Construct both with each other's container element.
+  // Instances are resolved at drag time via Sortable.from(), so order is irrelevant.
+  const sortA = new Sortable(listA, {
+    items:       '> li',
+    handle:      '.sort-grip',
+    helper:      'clone',
+    connectWith: [listB],
+    onSorted,
+  });
+
+  const sortB = new Sortable(listB, {
+    items:       '> li',
+    handle:      '.sort-grip',
+    helper:      'clone',
+    connectWith: [listA],
+    onSorted,
+  });
+
+  (window as unknown as Record<string, unknown>)['sortA'] = sortA;
+  (window as unknown as Record<string, unknown>)['sortB'] = sortB;
+}
+
+(document.getElementById('code-sortable-connected-html') as HTMLElement).textContent = `
+<ul id="list-a">
+  <li><span class="grip">···</span> Item 1</li>
+  <li><span class="grip">···</span> Item 2</li>
+</ul>
+<ul id="list-b">
+  <li><span class="grip">···</span> Item A</li>
+</ul>
+`.trim();
+
+(document.getElementById('code-sortable-connected-js') as HTMLElement).textContent = `
+import { Sortable } from 'devblocks-ui';
+
+const listA = document.getElementById('list-a');
+const listB = document.getElementById('list-b');
+
+// Pass each container to the other's connectWith.
+// Instances resolve lazily at drag time — construction order is irrelevant.
+const sortA = new Sortable(listA, {
+  items:       '> li',
+  handle:      '.grip',   // drag only from the grip element
+  helper:      'clone',   // clone follows cursor; original stays (dimmed)
+  connectWith: [listB],   // allow items to be dragged into list-b
+  onSorted: (info) =>
+    console.log(info.from.id, info.fromIndex, '→', info.to.id, info.toIndex),
+});
+
+const sortB = new Sortable(listB, {
+  items:       '> li',
+  handle:      '.grip',
+  helper:      'clone',
+  connectWith: [listA],
+  onSorted: (info) =>
+    console.log(info.from.id, info.fromIndex, '→', info.to.id, info.toIndex),
 });
 `.trim();
 

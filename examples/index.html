@@ -31,6 +31,7 @@
     <a href="#tooltip">Tooltip</a>
     <a href="#datepicker">DatePicker</a>
     <a href="#selectmenu">SelectMenu</a>
+    <a href="#sortable">Sortable</a>
   </nav>
 
   <main>
@@ -657,6 +658,92 @@
         <div class="code-blocks">
           <pre><code class="language-html" id="code-accordion-collapsible-html"></code></pre>
           <pre><code class="language-javascript" id="code-accordion-collapsible"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="component-category" id="sortable">Sortable</h2>
+
+    <!-- ───── Sortable — basic vertical list ─────────────────────────── -->
+    <section class="component">
+      <h3>Vertical list</h3>
+      <p class="component-desc">
+        Drag items to reorder. An origin placeholder (dashed) marks the source slot;
+        a destination placeholder (filled) shows where the item will land. Press
+        <kbd>Escape</kbd> to cancel a drag in progress.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <ul id="sortable-basic" style="list-style:none;padding:0;margin:0;width:260px">
+            <li style="padding:10px 14px;background:var(--dui-bg);border:1px solid var(--dui-border);border-radius:var(--dui-radius);margin-bottom:4px">Alpha</li>
+            <li style="padding:10px 14px;background:var(--dui-bg);border:1px solid var(--dui-border);border-radius:var(--dui-radius);margin-bottom:4px">Beta</li>
+            <li style="padding:10px 14px;background:var(--dui-bg);border:1px solid var(--dui-border);border-radius:var(--dui-radius);margin-bottom:4px">Gamma</li>
+            <li style="padding:10px 14px;background:var(--dui-bg);border:1px solid var(--dui-border);border-radius:var(--dui-radius);margin-bottom:4px">Delta</li>
+            <li style="padding:10px 14px;background:var(--dui-bg);border:1px solid var(--dui-border);border-radius:var(--dui-radius)">Epsilon</li>
+          </ul>
+          <output id="sortable-basic-result" class="demo-output" style="margin-top:12px">No sort yet.</output>
+        </div>
+
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-sortable-basic-html"></code></pre>
+          <pre><code class="language-javascript" id="code-sortable-basic-js"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── Sortable — connected lists with handles ─────────────────── -->
+    <section class="component">
+      <h3>Connected lists with handles</h3>
+      <p class="component-desc">
+        Drag items between two lists using <code>connectWith</code>. Each container
+        references the other's element — instances are resolved at drag time so
+        construction order doesn't matter. The <code>handle</code> option restricts
+        drag initiation to the grip icon; clicking elsewhere on the item does nothing.
+        Uses <code>helper: 'clone'</code> so the original item stays visible (dimmed)
+        while the clone follows the cursor.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div>
+              <p style="margin:0 0 6px;font-size:12px;font-weight:600;opacity:0.6;color:var(--dui-fg)">List A</p>
+              <ul id="sortable-list-a" style="list-style:none;padding:4px;margin:0;min-height:48px;border:1px dashed var(--dui-border);border-radius:var(--dui-radius)">
+                <li style="padding:8px 10px;background:var(--dui-bg);border:1px solid var(--dui-border);border-radius:var(--dui-radius);margin-bottom:4px;display:flex;align-items:center;gap:8px">
+                  <span class="sort-grip" style="display:flex;flex-shrink:0;opacity:0.45;line-height:1"><svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor"><circle cx="3" cy="3" r="1.5"/><circle cx="9" cy="3" r="1.5"/><circle cx="3" cy="8" r="1.5"/><circle cx="9" cy="8" r="1.5"/><circle cx="3" cy="13" r="1.5"/><circle cx="9" cy="13" r="1.5"/></svg></span>
+                  <span>Item 1</span>
+                </li>
+                <li style="padding:8px 10px;background:var(--dui-bg);border:1px solid var(--dui-border);border-radius:var(--dui-radius);margin-bottom:4px;display:flex;align-items:center;gap:8px">
+                  <span class="sort-grip" style="display:flex;flex-shrink:0;opacity:0.45;line-height:1"><svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor"><circle cx="3" cy="3" r="1.5"/><circle cx="9" cy="3" r="1.5"/><circle cx="3" cy="8" r="1.5"/><circle cx="9" cy="8" r="1.5"/><circle cx="3" cy="13" r="1.5"/><circle cx="9" cy="13" r="1.5"/></svg></span>
+                  <span>Item 2</span>
+                </li>
+                <li style="padding:8px 10px;background:var(--dui-bg);border:1px solid var(--dui-border);border-radius:var(--dui-radius);display:flex;align-items:center;gap:8px">
+                  <span class="sort-grip" style="display:flex;flex-shrink:0;opacity:0.45;line-height:1"><svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor"><circle cx="3" cy="3" r="1.5"/><circle cx="9" cy="3" r="1.5"/><circle cx="3" cy="8" r="1.5"/><circle cx="9" cy="8" r="1.5"/><circle cx="3" cy="13" r="1.5"/><circle cx="9" cy="13" r="1.5"/></svg></span>
+                  <span>Item 3</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p style="margin:0 0 6px;font-size:12px;font-weight:600;opacity:0.6;color:var(--dui-fg)">List B</p>
+              <ul id="sortable-list-b" style="list-style:none;padding:4px;margin:0;min-height:48px;border:1px dashed var(--dui-border);border-radius:var(--dui-radius)">
+                <li style="padding:8px 10px;background:var(--dui-bg);border:1px solid var(--dui-border);border-radius:var(--dui-radius);margin-bottom:4px;display:flex;align-items:center;gap:8px">
+                  <span class="sort-grip" style="display:flex;flex-shrink:0;opacity:0.45;line-height:1"><svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor"><circle cx="3" cy="3" r="1.5"/><circle cx="9" cy="3" r="1.5"/><circle cx="3" cy="8" r="1.5"/><circle cx="9" cy="8" r="1.5"/><circle cx="3" cy="13" r="1.5"/><circle cx="9" cy="13" r="1.5"/></svg></span>
+                  <span>Item A</span>
+                </li>
+                <li style="padding:8px 10px;background:var(--dui-bg);border:1px solid var(--dui-border);border-radius:var(--dui-radius);display:flex;align-items:center;gap:8px">
+                  <span class="sort-grip" style="display:flex;flex-shrink:0;opacity:0.45;line-height:1"><svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor"><circle cx="3" cy="3" r="1.5"/><circle cx="9" cy="3" r="1.5"/><circle cx="3" cy="8" r="1.5"/><circle cx="9" cy="8" r="1.5"/><circle cx="3" cy="13" r="1.5"/><circle cx="9" cy="13" r="1.5"/></svg></span>
+                  <span>Item B</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <output id="sortable-connected-result" class="demo-output" style="margin-top:12px">No sort yet.</output>
+        </div>
+
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-sortable-connected-html"></code></pre>
+          <pre><code class="language-javascript" id="code-sortable-connected-js"></code></pre>
         </div>
       </div>
     </section>
