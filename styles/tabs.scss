@@ -34,11 +34,9 @@
   }
 
   &.dui-tab-active > a {
-    background: none;
     color: var(--dui-fg);
     font-weight: 600;
-    border: 1px solid var(--dui-tab-border);
-    border-bottom: 0;
+    border-bottom: 1px solid var(--dui-tab-active-border);
     cursor: default;
   }
 }
