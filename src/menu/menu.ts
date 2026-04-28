@@ -360,13 +360,22 @@ export class Menu {
     }
   }
 
+  private _select(renderedLi: HTMLLIElement, sourceLi: HTMLLIElement, e: MouseEvent | KeyboardEvent): void {
+    if (typeof this.opts.onSelect === 'function') {
+      this.opts.onSelect(renderedLi, sourceLi, e);
+    } else {
+      const a = sourceLi.querySelector('a');
+      if (a) a.click();
+    }
+  }
+
   private onClickItem(e: MouseEvent, pnl: Panel): void {
     const target = e.target as Element | null;
     const li = target?.closest('.dui-menu-item') as HTMLLIElement | null;
     if (!li) return;
     const item = pnl.items[+(li.dataset['i'] ?? -1)];
-    if (item && !item.children && typeof this.opts.onSelect === 'function') {
-      this.opts.onSelect(li, item.el, e);
+    if (item && !item.children) {
+      this._select(li, item.el, e);
       if (this.opts.inline) {
         // Collapse floating submenus but leave the root panel open.
         while (this.pnls.length > 1) {
@@ -419,8 +428,8 @@ export class Menu {
         if (!item) return;
         if (item.children) {
           this.push(item.children, pnl.depth + 1);
-        } else if (typeof this.opts.onSelect === 'function') {
-          this.opts.onSelect(active, item.el, e);
+        } else {
+          this._select(active, item.el, e);
           if (this.opts.inline) {
             while (this.pnls.length > 1) {
               const popped = this.pnls.pop();
