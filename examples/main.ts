@@ -380,6 +380,11 @@ const tabs = new Tabs(document.querySelector('ul#my-tabs'), {
   onTabSelected: (index, tab) => {
     console.log('switched to', index, tab.href);
   },
+  onAfterTabLoad: (index, tab) => {
+    // Fires when the panel is ready: immediately for static/cached tabs
+    // (including the initial default tab), and after fetch for dynamic tabs.
+    console.log('panel ready', index, tab.panel);
+  },
   onTabLoadError: (index, tab, status) => {
     // status: HTTP status code (e.g. 403, 404, 500) or null for network errors.
     // Return false to suppress the default "Failed to load content." message

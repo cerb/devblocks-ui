@@ -14,6 +14,9 @@ export interface TabsOptions {
   onTabSelected?: ((index: number, tab: TabInfo) => void) | null;
   /** Fires before a tab is activated. Return false to cancel. */
   onBeforeTabLoad?: ((index: number, tab: TabInfo) => boolean | void) | null;
+  /** Fires once a tab's panel is ready: immediately for static/cached tabs (including
+   *  the initial default tab), and after the fetch resolves for dynamic tabs. */
+  onAfterTabLoad?: ((index: number, tab: TabInfo) => void) | null;
   /** Fires when a dynamic tab's fetch fails. status is the HTTP status code for
    *  non-ok responses, or null for network/fetch errors. Return false to suppress
    *  the default "Failed to load content." message and handle the panel yourself. */

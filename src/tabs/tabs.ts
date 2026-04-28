@@ -25,8 +25,8 @@ interface TabState {
   loaded: boolean;
 }
 
-type ResolvedOpts = Required<Omit<TabsOptions, 'onTabSelected' | 'onBeforeTabLoad' | 'onTabLoadError' | 'remember'>> &
-  Pick<TabsOptions, 'onTabSelected' | 'onBeforeTabLoad' | 'onTabLoadError'>;
+type ResolvedOpts = Required<Omit<TabsOptions, 'onTabSelected' | 'onBeforeTabLoad' | 'onAfterTabLoad' | 'onTabLoadError' | 'remember'>> &
+  Pick<TabsOptions, 'onTabSelected' | 'onBeforeTabLoad' | 'onAfterTabLoad' | 'onTabLoadError'>;
 
 const DEFAULTS: ResolvedOpts = {
   active: 0,
@@ -34,6 +34,7 @@ const DEFAULTS: ResolvedOpts = {
   storagePrefix: 'dui-tabs',
   onTabSelected: null,
   onBeforeTabLoad: null,
+  onAfterTabLoad: null,
   onTabLoadError: null,
 };
 
@@ -270,7 +271,11 @@ export class Tabs {
       try { localStorage.setItem(this.storageKey, String(index)); } catch { /* quota / private browsing */ }
     }
 
-    if (tab.isDynamic && !tab.loaded) void this.loadPanel(tab);
+    if (tab.isDynamic && !tab.loaded) {
+      void this.loadPanel(tab);
+    } else {
+      this.opts.onAfterTabLoad?.(index, info);
+    }
 
     if (fireCallbacks) this.opts.onTabSelected?.(index, info);
   }
@@ -305,6 +310,8 @@ export class Tabs {
       tab.panel.innerHTML = html;
       if (this.opts.executeScripts) this.runScripts(tab.panel);
       tab.loaded = true;
+      const index = this.tabs.indexOf(tab);
+      if (index >= 0) this.opts.onAfterTabLoad?.(index, this.makeInfo(index, tab));
     } catch {
       if (signal.aborted) return;
       tab.panel.innerHTML = '';
