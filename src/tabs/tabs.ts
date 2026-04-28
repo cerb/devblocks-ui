@@ -74,6 +74,16 @@ export class Tabs {
     return this.activeIndex;
   }
 
+  /** The root <ul> element this instance was constructed from. */
+  get el(): HTMLUListElement {
+    return this.ul;
+  }
+
+  /** Info objects for all tabs in their current order. */
+  get allTabs(): TabInfo[] {
+    return this.tabs.map((tab, i) => this.makeInfo(i, tab));
+  }
+
   /** Info object for the currently active tab, or null if none. */
   get activeTab(): TabInfo | null {
     const tab = this.tabs[this.activeIndex];
