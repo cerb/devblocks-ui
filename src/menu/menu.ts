@@ -41,6 +41,7 @@ const DEFAULTS: ResolvedOpts = {
   hoverTrigger: null,
   hoverGroup: null,
   hoverCloseDelay: 150,
+  fixed: false,
 };
 
 function makeSpacerLi(): HTMLLIElement {
@@ -177,7 +178,8 @@ export class Menu {
     const el = document.createElement('ul');
     el.className = 'dui-menu-panel'
       + (virt ? ' dui-menu-panel-virt' : '')
-      + (this.opts.inline && depth === 0 ? ' dui-menu-panel-inline' : '');
+      + (this.opts.inline && depth === 0 ? ' dui-menu-panel-inline' : '')
+      + (this.opts.fixed ? ' dui-menu-panel-fixed' : '');
     el.setAttribute('role', 'menu');
 
     const pnl: Panel = {
@@ -525,8 +527,8 @@ export class Menu {
       if (y < 0) y = 4;
     }
 
-    el.style.left = (x + window.scrollX) + 'px';
-    el.style.top  = (y + window.scrollY) + 'px';
+    el.style.left = (x + (this.opts.fixed ? 0 : window.scrollX)) + 'px';
+    el.style.top  = (y + (this.opts.fixed ? 0 : window.scrollY)) + 'px';
   }
 
   private hitTest(target: Node): boolean {

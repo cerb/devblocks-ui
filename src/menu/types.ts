@@ -44,6 +44,8 @@ export interface MenuOptions {
   hoverGroup?: string | null;
   /** Delay (ms) before closing a hover-triggered menu after the mouse leaves. Default 150. */
   hoverCloseDelay?: number;
+  /** Use position:fixed instead of position:absolute for floating panels. Default false. */
+  fixed?: boolean;
 }
 
 /**
