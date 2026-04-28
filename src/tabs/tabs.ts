@@ -87,8 +87,8 @@ export class Tabs {
 
   /** Re-fetch a dynamic tab's content from its URL (ignores cached state).
    *  If the tab is currently active the reload starts immediately; otherwise
-   *  it loads on next selection. Does not fire onTabSelected. */
-  refresh(index: number): void {
+   *  it loads on next selection. Omit index to refresh the active tab. Does not fire onTabSelected. */
+  refresh(index = this.activeIndex): void {
     const tab = this.tabs[index];
     if (!tab?.isDynamic) return;
     tab.loaded = false;

@@ -401,6 +401,7 @@ const tabs = new Tabs(document.querySelector('ul#my-tabs'), {
 tabs.select(2);           // programmatic switch
 tabs.active;              // current index (getter)
 tabs.activeTab;           // { index, li, panel, href, isDynamic } — TabInfo | null
+tabs.refresh();           // clear cache and reload the active dynamic tab
 tabs.refresh(1);          // clear cache and reload dynamic tab 1 from its URL
 tabs.sync();              // re-parse <ul> after adding/removing <li> items
 tabs.destroy();           // tear down ARIA attrs and remove dynamic panels
