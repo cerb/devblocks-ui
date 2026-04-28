@@ -25,8 +25,8 @@ interface TabState {
   loaded: boolean;
 }
 
-type ResolvedOpts = Required<Omit<TabsOptions, 'onTabSelected' | 'onBeforeTabLoad' | 'remember'>> &
-  Pick<TabsOptions, 'onTabSelected' | 'onBeforeTabLoad'>;
+type ResolvedOpts = Required<Omit<TabsOptions, 'onTabSelected' | 'onBeforeTabLoad' | 'onTabLoadError' | 'remember'>> &
+  Pick<TabsOptions, 'onTabSelected' | 'onBeforeTabLoad' | 'onTabLoadError'>;
 
 const DEFAULTS: ResolvedOpts = {
   active: 0,
@@ -34,6 +34,7 @@ const DEFAULTS: ResolvedOpts = {
   storagePrefix: 'dui-tabs',
   onTabSelected: null,
   onBeforeTabLoad: null,
+  onTabLoadError: null,
 };
 
 
@@ -289,9 +290,13 @@ export class Tabs {
     wrap.appendChild(spinner.el);
     tab.panel.appendChild(wrap);
 
+    let httpStatus: number | null = null;
     try {
       const res = await fetch(tab.href, { signal });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) {
+        httpStatus = res.status;
+        throw new Error(`HTTP ${res.status}`);
+      }
       const html = await res.text();
       if (signal.aborted) return;
       tab.panel.innerHTML = '';
@@ -303,10 +308,15 @@ export class Tabs {
     } catch {
       if (signal.aborted) return;
       tab.panel.innerHTML = '';
-      const errEl = document.createElement('p');
-      errEl.className = 'dui-tab-panel-error';
-      errEl.textContent = 'Failed to load content.';
-      tab.panel.appendChild(errEl);
+      const index = this.tabs.indexOf(tab);
+      const suppress = index >= 0 &&
+        this.opts.onTabLoadError?.(index, this.makeInfo(index, tab), httpStatus) === false;
+      if (!suppress) {
+        const errEl = document.createElement('p');
+        errEl.className = 'dui-tab-panel-error';
+        errEl.textContent = 'Failed to load content.';
+        tab.panel.appendChild(errEl);
+      }
       // loaded stays false so refresh() or the next select() will retry.
     }
   }

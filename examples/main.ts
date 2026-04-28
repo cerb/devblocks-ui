@@ -372,17 +372,25 @@ import { Tabs } from 'devblocks-ui';
 
 const tabs = new Tabs(document.querySelector('ul#my-tabs'), {
   active: 0,                          // initial selected tab index (default 0)
-  remember: true,                     // persist active tab in localStorage (auto-key)
-  // remember: 'my-tabs',            // or use a fixed key
+  remember: 'myTabset',               // persist active tab; key: dui-tabs[myTabset]
+  storagePrefix: 'myApp',             // optional prefix (default: 'dui-tabs')
   onBeforeTabLoad: (index, tab) => {
     if (someCondition) return false;  // return false to cancel the switch
   },
   onTabSelected: (index, tab) => {
     console.log('switched to', index, tab.href);
   },
+  onTabLoadError: (index, tab, status) => {
+    // status: HTTP status code (e.g. 403, 404, 500) or null for network errors.
+    // Return false to suppress the default "Failed to load content." message
+    // and render your own UI into tab.panel instead.
+    if (status === 403) {
+      tab.panel.innerHTML = '<p>Access denied.</p>';
+      return false;
+    }
+  },
 });
 
-// remember: true  auto-derives a key from the page URL + component DOM path.
 // Pass active: N to override the stored tab (e.g. for permalink navigation).
 
 tabs.select(2);           // programmatic switch
@@ -433,6 +441,11 @@ const tabs = new Tabs(document.querySelector('ul#my-tabs'), {
   executeScripts: true,
   onTabSelected: (index, tab) => {
     if (tab.isDynamic) console.log('loaded from', tab.href);
+  },
+  onTabLoadError: (index, tab, status) => {
+    // status: HTTP status code or null for network errors.
+    // Return false to suppress the default error message.
+    console.error('tab', index, 'failed with status', status);
   },
 });
 
