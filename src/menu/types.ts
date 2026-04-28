@@ -30,6 +30,20 @@ export interface MenuOptions {
    * collapses submenus but keeps the root visible.  close() still works.
    */
   inline?: boolean;
+  /**
+   * Element that opens the menu on mouseenter and closes it on mouseleave
+   * (after hoverCloseDelay ms).  The menu positions itself anchored to this
+   * element, so no separate open() call is needed.
+   */
+  hoverTrigger?: HTMLElement | null;
+  /**
+   * Group name that links sibling hover menus.  When any member of the group
+   * opens via hover, all other members close immediately so navigation feels
+   * instant.  Has no effect without hoverTrigger.
+   */
+  hoverGroup?: string | null;
+  /** Delay (ms) before closing a hover-triggered menu after the mouse leaves. Default 150. */
+  hoverCloseDelay?: number;
 }
 
 /**

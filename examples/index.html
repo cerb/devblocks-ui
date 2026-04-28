@@ -209,6 +209,57 @@
       </div>
     </section>
 
+    <!-- ───── Menu — hover navbar ────────────────────────────────────── -->
+    <section class="component">
+      <h3>Hover navbar</h3>
+      <p class="component-desc">
+        Pass <code>hoverTrigger</code> to open/close a menu on mouseenter/mouseleave
+        with a configurable close delay so the cursor can cross the gap to the panel.
+        Link sibling menus with <code>hoverGroup</code> so hovering a new trigger
+        instantly closes the previous one.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo">
+          <nav id="hover-navbar" style="display:flex;gap:4px">
+            <button type="button" class="demo-trigger" id="hover-trigger-configure">Configure</button>
+            <button type="button" class="demo-trigger" id="hover-trigger-records">Records</button>
+            <button type="button" class="demo-trigger" id="hover-trigger-developers">Developers</button>
+          </nav>
+          <output id="hover-navbar-result" class="demo-output">No selection yet.</output>
+
+          <ul id="hover-menu-configure" hidden>
+            <li data-id="cfg.settings">Settings</li>
+            <li data-id="cfg.mail">Mail</li>
+            <li data-id="cfg.storage">Storage
+              <ul>
+                <li data-id="cfg.storage.attachments">Attachments</li>
+                <li data-id="cfg.storage.profiles">Profile Images</li>
+              </ul>
+            </li>
+            <li data-id="cfg.plugins">Plugins</li>
+          </ul>
+
+          <ul id="hover-menu-records" hidden>
+            <li data-id="rec.tickets">Tickets</li>
+            <li data-id="rec.contacts">Contacts</li>
+            <li data-id="rec.orgs">Organizations</li>
+          </ul>
+
+          <ul id="hover-menu-developers" hidden>
+            <li data-id="dev.automation">Automation Logs</li>
+            <li data-id="dev.scripting">Scripting Tester</li>
+            <li data-id="dev.schema">Database Schema</li>
+          </ul>
+        </div>
+
+        <div class="code-blocks">
+          <pre><code class="language-html" id="code-menu-hover-html"></code></pre>
+          <pre><code class="language-javascript" id="code-menu-hover"></code></pre>
+        </div>
+      </div>
+    </section>
+
     <h2 class="component-category" id="tabs">Tabs</h2>
 
     <!-- ───── Tabs — anchor (static panels) ────────────────────────── -->

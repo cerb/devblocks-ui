@@ -1,4 +1,5 @@
 import { Menu, Toggle, Tabs, Spinner, Dialog, Tooltip, DatePicker, SelectMenu, Accordion, Sortable } from 'devblocks-ui';
+import type { MenuOptions } from 'devblocks-ui';
 import 'devblocks-ui/styles';
 
 declare const Prism: { highlightAllUnder: (root: ParentNode) => void } | undefined;
@@ -256,6 +257,76 @@ const menu = new Menu(document.querySelector('ul#menu-inline'), {
 // Close/re-open programmatically:
 menu.close();
 menu.open();
+`.trim();
+
+// ── Demo: hover navbar ────────────────────────────────────────────────
+
+{
+  const result = document.getElementById('hover-navbar-result') as HTMLElement;
+
+  const onSelect: MenuOptions['onSelect'] = (_renderedLi, sourceLi) => {
+    const id = sourceLi.dataset['id'] ?? '(no id)';
+    const label = sourceLi.firstChild?.textContent?.trim() ?? '';
+    result.textContent = `Selected: ${label} [${id}]`;
+  };
+
+  const defs: Array<[string, string]> = [
+    ['hover-trigger-configure',  'hover-menu-configure'],
+    ['hover-trigger-records',    'hover-menu-records'],
+    ['hover-trigger-developers', 'hover-menu-developers'],
+  ];
+
+  for (const [triggerId, ulId] of defs) {
+    const trigger = document.getElementById(triggerId) as HTMLButtonElement;
+    const ul = document.getElementById(ulId) as HTMLUListElement;
+    new Menu(ul, {
+      hoverTrigger: trigger,
+      hoverGroup: 'main-nav',
+      hoverCloseDelay: 150,
+      onSelect,
+    });
+  }
+}
+
+(document.getElementById('code-menu-hover-html') as HTMLElement).textContent = `
+<nav style="display:flex;gap:4px">
+  <button id="hover-trigger-configure"  type="button">Configure</button>
+  <button id="hover-trigger-records"    type="button">Records</button>
+  <button id="hover-trigger-developers" type="button">Developers</button>
+</nav>
+
+<ul id="hover-menu-configure" hidden>
+  <li data-id="cfg.settings">Settings</li>
+  <li data-id="cfg.mail">Mail</li>
+  <li data-id="cfg.storage">Storage
+    <ul>
+      <li data-id="cfg.storage.attachments">Attachments</li>
+      <li data-id="cfg.storage.profiles">Profile Images</li>
+    </ul>
+  </li>
+  <li data-id="cfg.plugins">Plugins</li>
+</ul>
+<!-- ... repeat for each trigger/ul pair ... -->
+`.trim();
+
+(document.getElementById('code-menu-hover') as HTMLElement).textContent = `
+import { Menu } from 'devblocks-ui';
+
+const triggers = ['configure', 'records', 'developers'];
+
+for (const name of triggers) {
+  const trigger = document.getElementById('hover-trigger-' + name);
+  const ul      = document.getElementById('hover-menu-' + name);
+
+  new Menu(ul, {
+    hoverTrigger:    trigger,    // opens on mouseenter, closes on mouseleave
+    hoverGroup:      'main-nav', // instant switch between siblings in same group
+    hoverCloseDelay: 150,        // ms to wait after mouse leaves before closing
+    onSelect: (_renderedLi, sourceLi) => {
+      console.log('selected', sourceLi.dataset.id);
+    },
+  });
+}
 `.trim();
 
 // ── Demo: tabs — anchor ───────────────────────────────────────────────

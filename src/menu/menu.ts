@@ -38,6 +38,9 @@ const DEFAULTS: ResolvedOpts = {
   openDelay: 80,
   virtBuffer: 6,
   inline: false,
+  hoverTrigger: null,
+  hoverGroup: null,
+  hoverCloseDelay: 150,
 };
 
 function makeSpacerLi(): HTMLLIElement {
@@ -49,11 +52,16 @@ function makeSpacerLi(): HTMLLIElement {
 
 export class Menu {
   private static _instances = new WeakMap<HTMLUListElement, Menu>();
+  private static _hoverGroups = new Map<string, Set<Menu>>();
   private opts: ResolvedOpts;
   private root: MenuItem[];
   private sourceUl: HTMLUListElement;
   private pnls: Panel[] = [];
   private hoverTimer: number | null = null;
+  private hoverCloseTimer: number | null = null;
+  private hoverMouseInside = false;
+  private triggerEnter: (() => void) | null = null;
+  private triggerLeave: (() => void) | null = null;
   private anchor: HTMLElement | null = null;
   private docDown: ((e: PointerEvent) => void) | null = null;
   private docKey: ((e: KeyboardEvent) => void) | null = null;
@@ -62,8 +70,14 @@ export class Menu {
     this.opts = { ...DEFAULTS, ...opts };
     this.root = parseUl(ul);
     this.sourceUl = ul;
-    if (this.opts.inline) this.open();
     Menu._instances.set(ul, this);
+    if (this.opts.hoverTrigger) this._bindHoverTrigger(this.opts.hoverTrigger);
+    if (this.opts.hoverGroup) {
+      let g = Menu._hoverGroups.get(this.opts.hoverGroup);
+      if (!g) { g = new Set(); Menu._hoverGroups.set(this.opts.hoverGroup, g); }
+      g.add(this);
+    }
+    if (this.opts.inline) this.open();
   }
 
   static from(el: HTMLUListElement): Menu | undefined {
@@ -107,6 +121,10 @@ export class Menu {
       clearTimeout(this.hoverTimer);
       this.hoverTimer = null;
     }
+    if (this.hoverCloseTimer !== null) {
+      clearTimeout(this.hoverCloseTimer);
+      this.hoverCloseTimer = null;
+    }
     const wasOpen = this.pnls.length > 0;
     for (const p of this.pnls) p.el.remove();
     this.pnls = [];
@@ -127,6 +145,11 @@ export class Menu {
 
   destroy(): void {
     Menu._instances.delete(this.sourceUl);
+    if (this.opts.hoverGroup) Menu._hoverGroups.get(this.opts.hoverGroup)?.delete(this);
+    if (this.opts.hoverTrigger && this.triggerEnter && this.triggerLeave) {
+      this.opts.hoverTrigger.removeEventListener('mouseenter', this.triggerEnter);
+      this.opts.hoverTrigger.removeEventListener('mouseleave', this.triggerLeave);
+    }
     this.close();
   }
 
@@ -184,6 +207,10 @@ export class Menu {
 
     el.addEventListener('mouseover', (e) => this.onOver(e as MouseEvent, pnl));
     el.addEventListener('click', (e) => this.onClickItem(e as MouseEvent, pnl));
+    if (this.opts.hoverTrigger) {
+      el.addEventListener('mouseenter', () => this._hoverIn());
+      el.addEventListener('mouseleave', () => this._hoverOut());
+    }
     return pnl;
   }
 
@@ -266,6 +293,40 @@ export class Menu {
       pnl.spacerT.nextSibling.remove();
     }
     el.insertBefore(frag, pnl.spacerB);
+  }
+
+  // ── Hover trigger ────────────────────────────────────────────────────
+
+  private _bindHoverTrigger(el: HTMLElement): void {
+    this.triggerEnter = () => {
+      this._hoverIn();
+      if (!this.isOpen()) {
+        if (this.opts.hoverGroup) {
+          Menu._hoverGroups.get(this.opts.hoverGroup)?.forEach(m => { if (m !== this) m.close(); });
+        }
+        this.open(el);
+      }
+    };
+    this.triggerLeave = () => this._hoverOut();
+    el.addEventListener('mouseenter', this.triggerEnter);
+    el.addEventListener('mouseleave', this.triggerLeave);
+  }
+
+  private _hoverIn(): void {
+    this.hoverMouseInside = true;
+    if (this.hoverCloseTimer !== null) {
+      clearTimeout(this.hoverCloseTimer);
+      this.hoverCloseTimer = null;
+    }
+  }
+
+  private _hoverOut(): void {
+    this.hoverMouseInside = false;
+    if (this.hoverCloseTimer !== null) clearTimeout(this.hoverCloseTimer);
+    this.hoverCloseTimer = window.setTimeout(() => {
+      this.hoverCloseTimer = null;
+      if (!this.hoverMouseInside) this.close();
+    }, this.opts.hoverCloseDelay);
   }
 
   // ── Event handlers ──────────────────────────────────────────────────
