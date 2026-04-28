@@ -23,6 +23,19 @@
     white-space: nowrap;
     cursor: pointer;
 
+    // Reserve bold width so activating a tab never shifts layout.
+    // The ::after ghost matches the label at font-weight:600; its
+    // zero height keeps it invisible while its width holds the space.
+    &::after {
+      content: attr(data-label);
+      display: block;
+      font-weight: 600;
+      height: 0;
+      overflow: hidden;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
     &:hover {
       background: var(--dui-tab-hover-bg);
     }

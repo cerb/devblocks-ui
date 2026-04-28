@@ -19,7 +19,10 @@ export interface TabsOptions {
    *  and your page has a CSP nonce or equivalent protection. */
   executeScripts?: boolean;
   /** Persist the active tab index in localStorage and restore it on re-init.
-   *  true = auto-key from page URL + component DOM path; string = fixed key.
-   *  An explicit active option takes precedence (use it for permalink navigation). */
-  remember?: boolean | string;
+   *  Value is the tab set's unique key (e.g. 'ticketProfile'). Final storage
+   *  key: `${storagePrefix}[${remember}]`. An explicit active option takes precedence. */
+  remember?: string;
+  /** Prefix for the localStorage key composed with remember. Default: 'dui-tabs'.
+   *  Final key: `${storagePrefix}[${remember}]`. */
+  storagePrefix?: string;
 }

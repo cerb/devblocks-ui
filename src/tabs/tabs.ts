@@ -31,23 +31,11 @@ type ResolvedOpts = Required<Omit<TabsOptions, 'onTabSelected' | 'onBeforeTabLoa
 const DEFAULTS: ResolvedOpts = {
   active: 0,
   executeScripts: false,
+  storagePrefix: 'dui-tabs',
   onTabSelected: null,
   onBeforeTabLoad: null,
 };
 
-function selectorPath(el: Element): string {
-  const parts: string[] = [];
-  let node: Element | null = el;
-  while (node && node.parentElement) {
-    const tag = node.tagName.toLowerCase();
-    const siblings = Array.from(node.parentElement.children)
-      .filter(c => c.tagName === node!.tagName);
-    const idx = siblings.indexOf(node);
-    parts.unshift(idx > 0 ? `${tag}:nth(${idx})` : tag);
-    node = node.parentElement;
-  }
-  return parts.join('>');
-}
 
 export class Tabs {
   private readonly ul: HTMLUListElement;
@@ -65,12 +53,7 @@ export class Tabs {
     this.opts = { ...DEFAULTS, ...opts };
     this.uid = ++Tabs._uid;
 
-    const r = opts.remember;
-    if (r) {
-      this.storageKey = typeof r === 'string'
-        ? r
-        : `dui-tabs:${location.pathname}${location.search}:${selectorPath(ul)}`;
-    }
+    if (opts.remember) this.storageKey = `${this.opts.storagePrefix}[${opts.remember}]`;
 
     this.init(opts.active);
     this.ul.addEventListener('click', this.onUlClick);
@@ -154,6 +137,7 @@ export class Tabs {
       tab.a.removeAttribute('aria-selected');
       tab.a.removeAttribute('aria-controls');
       tab.a.removeAttribute('tabindex');
+      tab.a.removeAttribute('data-label');
       tab.panel.removeAttribute('role');
       tab.panel.removeAttribute('aria-labelledby');
       tab.panel.removeAttribute('tabindex');
@@ -243,6 +227,7 @@ export class Tabs {
       a.setAttribute('aria-controls', panel.id);
       a.setAttribute('aria-selected', 'false');
       a.setAttribute('tabindex', '-1');
+      a.setAttribute('data-label', a.textContent ?? '');
 
       panel.setAttribute('role', 'tabpanel');
       panel.setAttribute('aria-labelledby', tabId);

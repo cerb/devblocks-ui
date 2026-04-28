@@ -337,7 +337,7 @@ for (const name of triggers) {
   const tabsStatic = new Tabs(
     document.getElementById('tabs-static') as HTMLUListElement,
     {
-      remember: true,
+      remember: 'tabs-static-demo',
       onTabSelected: (index, tab) => {
         const label = tab.li.querySelector('a')?.textContent?.trim() ?? '';
         result.textContent = `Selected tab ${index}: ${label}`;
