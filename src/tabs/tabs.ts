@@ -74,6 +74,12 @@ export class Tabs {
     return this.activeIndex;
   }
 
+  /** Info object for the currently active tab, or null if none. */
+  get activeTab(): TabInfo | null {
+    const tab = this.tabs[this.activeIndex];
+    return tab ? this.makeInfo(this.activeIndex, tab) : null;
+  }
+
   /** Activate a tab by 0-based index. Fires onBeforeTabLoad / onTabSelected. */
   select(index: number): void {
     this.activateTab(index);
