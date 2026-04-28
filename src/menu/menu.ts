@@ -501,10 +501,13 @@ export class Menu {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    el.style.visibility = 'hidden';
+    // Park offscreen-left so the panel never causes a right-side scrollbar
+    // during measurement (an abs-positioned element with no coords still
+    // extends the document's scrollable area).
+    el.style.left = '-9999px';
+    el.style.top = '0px';
     const pw = el.offsetWidth || 200;
     const ph = el.offsetHeight || 100;
-    el.style.visibility = '';
 
     let x: number;
     let y: number;
@@ -515,7 +518,8 @@ export class Menu {
       x = r0.left;
       y = r0.bottom + 2;
       if (y + ph > vh) y = r0.top - ph - 2;
-      if (x + pw > vw) x = Math.max(0, vw - pw - 4);
+      if (x + pw > vw) x = vw - pw - 4;
+      x = Math.max(0, x);
     } else {
       const par = this.pnls[depth - 1];
       const refEl = par.el.querySelector('.dui-menu-item-active') ?? par.el;
@@ -523,6 +527,7 @@ export class Menu {
       x = r1.right + 2;
       y = r1.top;
       if (x + pw > vw) x = r1.left - pw - 2;
+      x = Math.max(0, Math.min(x, vw - pw));
       if (y + ph > vh) y = Math.max(4, vh - ph - 4);
       if (y < 0) y = 4;
     }
