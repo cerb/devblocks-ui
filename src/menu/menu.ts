@@ -498,8 +498,10 @@ export class Menu {
 
   private place(pnl: Panel, depth: number): void {
     const el = pnl.el;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
+    // clientWidth/clientHeight exclude the scrollbar track; innerWidth/Height
+    // include it, which causes off-by-scrollbar-width positioning errors.
+    const vw = document.documentElement.clientWidth;
+    const vh = document.documentElement.clientHeight;
 
     // Park offscreen-left so the panel never causes a right-side scrollbar
     // during measurement (an abs-positioned element with no coords still
@@ -527,7 +529,7 @@ export class Menu {
       x = r1.right + 2;
       y = r1.top;
       if (x + pw > vw) x = r1.left - pw - 2;
-      x = Math.max(0, Math.min(x, vw - pw));
+      x = Math.max(0, Math.min(x, vw - pw - 4));
       if (y + ph > vh) y = Math.max(4, vh - ph - 4);
       if (y < 0) y = 4;
     }
