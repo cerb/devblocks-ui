@@ -490,8 +490,9 @@ export class Menu {
   }
 
   // ── Positioning ─────────────────────────────────────────────────────
-  // Panels use position:fixed and append to <body>. Submenus open to the
-  // right of the hovered row; flip left/up if needed.
+  // Panels use position:absolute and append to <body>. Viewport-flip logic
+  // runs in viewport-relative space (getBoundingClientRect), then scroll
+  // offsets are added when writing the final style values.
 
   private place(pnl: Panel, depth: number): void {
     const el = pnl.el;
@@ -524,8 +525,8 @@ export class Menu {
       if (y < 0) y = 4;
     }
 
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
+    el.style.left = (x + window.scrollX) + 'px';
+    el.style.top  = (y + window.scrollY) + 'px';
   }
 
   private hitTest(target: Node): boolean {
